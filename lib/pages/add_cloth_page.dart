@@ -110,7 +110,7 @@ class _AddClothPageState extends State<AddClothPage> {
                       _selectClothType(clothType);
                     },
                     style: ElevatedButton.styleFrom(
-                      primary: selectedType == clothType ? Colors.green : null,
+                      backgroundColor: selectedType == clothType ? Colors.green : null,
                     ),
                     child: Text(clothType),
                   ),
@@ -130,7 +130,7 @@ class _AddClothPageState extends State<AddClothPage> {
                             _selectSize(size);
                           },
                           style: ElevatedButton.styleFrom(
-                            primary: selectedSize == size ? Colors.green : null,
+                            backgroundColor: selectedSize == size ? Colors.green : null,
                           ),
                           child: Text(size),
                         ),
@@ -151,7 +151,7 @@ class _AddClothPageState extends State<AddClothPage> {
                             _selectShoeSize(shoeSize);
                           },
                           style: ElevatedButton.styleFrom(
-                            primary: selectedShoeSize == shoeSize ? Colors.green : null,
+                            backgroundColor: selectedShoeSize == shoeSize ? Colors.green : null,
                           ),
                           child: Text(shoeSize),
                         ),

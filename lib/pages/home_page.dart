@@ -1,8 +1,8 @@
 import 'package:fit_fe/pages/board_page.dart';
 import 'package:fit_fe/pages/profile_page.dart';
+import 'package:fit_fe/pages/rank_page.dart';
 import 'package:flutter/material.dart';
 import 'package:fit_fe/pages/create_post_page1.dart';
-import 'package:fit_fe/pages/cloth_page.dart';
 import 'package:fit_fe/pages/search_page.dart';
 
 class HomePage extends StatefulWidget {
@@ -93,7 +93,7 @@ class _HomePageState extends State<HomePage> {
       case 1:
         return SearchPage();
       case 3:
-        return ClothsPage();
+        return RankPage();
       case 4:
         return ProfilePage();
       default:

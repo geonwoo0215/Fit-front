@@ -138,8 +138,8 @@ class _ProfilePageState extends State<ProfilePage> {
           ElevatedButton(
             onPressed: _navigateToMyBoardsPage,
             style: ElevatedButton.styleFrom(
-              primary: Colors.white, // Background color
-              onPrimary: Colors.black, // Text color
+              backgroundColor: Colors.white, // Background color
+              foregroundColor: Colors.black, // Text color
               side: BorderSide(color: Colors.black), // Border color
             ),
             child: Text('내 게시물 보기'),
@@ -148,7 +148,7 @@ class _ProfilePageState extends State<ProfilePage> {
           TextButton(
             onPressed: _logout,
             style: TextButton.styleFrom(
-              primary: Colors.red, // Text color
+              backgroundColor: Colors.red, // Text color
             ),
             child: Text('로그아웃'),
           ),

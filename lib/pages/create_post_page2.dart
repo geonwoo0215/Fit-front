@@ -210,7 +210,7 @@ class _CreatePostStep2State extends State<CreatePostStep2> {
                               _selectGroundConditionOption(groundCondition);
                             },
                             style: ElevatedButton.styleFrom(
-                              primary: selectedGroundCondition == groundCondition ? Colors.green : Colors.white,
+                              backgroundColor: selectedGroundCondition == groundCondition ? Colors.green : Colors.white,
                               foregroundColor: selectedGroundCondition == groundCondition ? Colors.white : Colors.grey,
                               side: BorderSide(
                                 color: selectedGroundCondition == groundCondition ? Colors.green : Colors.grey,
@@ -235,8 +235,8 @@ class _CreatePostStep2State extends State<CreatePostStep2> {
                           _selectClothTypeOption('상의');
                         },
                         style: ElevatedButton.styleFrom(
-                          primary: Colors.white,
-                          onPrimary: Colors.black,
+                          backgroundColor: Colors.white,
+                          foregroundColor: Colors.black,
                           side: BorderSide(color: Colors.black),
                         ),
                         child: Text(selectedTop.isEmpty ? '상의 선택' : selectedTop, style: TextStyle(color: Colors.black)),
@@ -254,7 +254,7 @@ class _CreatePostStep2State extends State<CreatePostStep2> {
                           });
                         },
                         style: ElevatedButton.styleFrom(
-                          primary: isTopAppropriate ? Colors.green : Colors.red,
+                          backgroundColor: isTopAppropriate ? Colors.green : Colors.red,
                         ),
                         child: Text(isTopAppropriate ? '적절' : '부적절', style: TextStyle(color: Colors.black)),
                       ),
@@ -274,8 +274,8 @@ class _CreatePostStep2State extends State<CreatePostStep2> {
                           _selectClothTypeOption('하의');
                         },
                         style: ElevatedButton.styleFrom(
-                          primary: Colors.white,
-                          onPrimary: Colors.black,
+                          backgroundColor: Colors.white,
+                          foregroundColor: Colors.black,
                           side: BorderSide(color: Colors.black),
                         ),
                         child: Text(selectedBottom.isEmpty ? '하의 선택' : selectedBottom, style: TextStyle(color: Colors.black)),
@@ -293,7 +293,7 @@ class _CreatePostStep2State extends State<CreatePostStep2> {
                           });
                         },
                         style: ElevatedButton.styleFrom(
-                          primary: isBottomAppropriate ? Colors.green : Colors.red,
+                          backgroundColor: isBottomAppropriate ? Colors.green : Colors.red,
                         ),
                         child: Text(isBottomAppropriate ? '적절' : '부적절', style: TextStyle(color: Colors.black)),
                       ),
@@ -313,8 +313,8 @@ class _CreatePostStep2State extends State<CreatePostStep2> {
                           _selectClothTypeOption('신발');
                         },
                         style: ElevatedButton.styleFrom(
-                          primary: Colors.white,
-                          onPrimary: Colors.black,
+                          backgroundColor: Colors.white,
+                          foregroundColor: Colors.black,
                           side: BorderSide(color: Colors.black),
                         ),
                         child: Text(selectedShoes.isEmpty ? '신발 선택' : selectedShoes, style: TextStyle(color: Colors.black)),
@@ -332,7 +332,7 @@ class _CreatePostStep2State extends State<CreatePostStep2> {
                           });
                         },
                         style: ElevatedButton.styleFrom(
-                          primary: isShoesAppropriate ? Colors.green : Colors.red,
+                          backgroundColor: isShoesAppropriate ? Colors.green : Colors.red,
                         ),
                         child: Text(isShoesAppropriate ? '적절' : '부적절', style: TextStyle(color: Colors.black)),
                       ),
