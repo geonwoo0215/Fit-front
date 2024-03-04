@@ -4,7 +4,7 @@ import 'package:fit_fe/models/cloth_response.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:fit_fe/models/comment_response.dart';
 import 'package:dio/dio.dart';
-
+import 'package:fit_fe/handler/token_refresh_handler.dart';
 class BoardDetailPage extends StatefulWidget {
   final BoardResponse board;
 
@@ -118,17 +118,19 @@ class _BoardDetailPageState extends State<BoardDetailPage> {
         ),
         data: {
           'comment': comment,
-          'commentId': commentId, // CommentSaveRequest에 commentId 추가
+          'commentId': commentId,
         },
       );
 
       if (response.statusCode == 201) {
-        // 댓글 작성 성공 시, 새로운 댓글을 화면에 추가
         CommentResponse newComment =
             CommentResponse.fromJson(response.data['data']);
         setState(() {
           comments.add(newComment);
         });
+      }else if (response.statusCode == 401) {
+        await TokenRefreshHandler.refreshAccessToken(context);
+        await postComment(comment);
       } else {
         print('댓글 작성 실패');
       }
@@ -190,21 +192,17 @@ class _BoardDetailPageState extends State<BoardDetailPage> {
           actions: [
             TextButton(
               onPressed: () {
-                Navigator.pop(context); // 다이얼로그 닫기
+                Navigator.pop(context);
               },
               child: Text('취소'),
             ),
             TextButton(
               onPressed: () async {
-                // 삭제 버튼을 눌렀을 때 수행할 로직 추가
-                // 예: 데이터 삭제 함수 호출
-                Navigator.pop(context); // 다이얼로그 닫기
+                Navigator.pop(context);
 
-                // 삭제 API 호출
                 try {
-                  String? jwtToken =
-                      await _secureStorage.read(key: 'jwt_token');
-                  await dio.delete(
+                  String? jwtToken = await _secureStorage.read(key: 'jwt_token');
+                  final response = await dio.delete(
                     'http://10.0.2.2:8080/boards/${widget.board.id}',
                     options: Options(
                       headers: {
@@ -213,11 +211,8 @@ class _BoardDetailPageState extends State<BoardDetailPage> {
                       },
                     ),
                   );
-                  // 삭제 성공
-                  // 추가로 필요한 로직 수행
                 } catch (error) {
                   print('삭제 오류: $error');
-                  // 삭제 실패 처리 또는 사용자에게 알림
                 }
               },
               child: Text('삭제'),

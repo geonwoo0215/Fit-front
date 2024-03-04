@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:fit_fe/handler/token_refresh_handler.dart';
 
 class AddClothPage extends StatefulWidget {
   @override
@@ -14,13 +15,12 @@ class _AddClothPageState extends State<AddClothPage> {
 
   List<String> clothTypes = ['상의', '하의', '악세사리', '신발'];
   List<String> clothSizes = ['S', 'M', 'L', 'XL'];
-  List<String> shoeSizes = ['220', '230', '240', '250'];
+  List<String> shoeSizes = ['220', '225', '230', '235', '240', '245', '250', '255','260','265','270','275','280','285','290','295','300'];
 
   String selectedType = '';
   String selectedSize = '';
   String selectedShoeSize = '';
 
-  // Map of cloth types to their codes
   final Map<String, String> clothTypeCodes = {
     '상의': '001',
     '하의': '002',
@@ -32,15 +32,13 @@ class _AddClothPageState extends State<AddClothPage> {
     final dio = Dio();
     const String apiUrl = 'http://10.0.2.2:8080/cloths';
 
-    // Use the mapped code for the selected cloth type
     String clothTypeCode = clothTypeCodes[selectedType] ?? '';
 
-    // TODO: Replace the following values with actual data
     Map<String, dynamic> requestData = {
       'type': clothTypeCode,
       'size': selectedSize,
       'information': informationController.text,
-      'shoe': shoeController.text == 'true', // Convert to Boolean
+      'shoe': shoeController.text == 'true',
     };
     String? jwtToken = await _secureStorage.read(key: 'jwt_token');
     try {
@@ -56,24 +54,24 @@ class _AddClothPageState extends State<AddClothPage> {
       );
 
       if (response.statusCode == 201) {
-        // Cloth added successfully
-        Navigator.pop(context, true);// Close the AddClothPage after successful addition
+        Navigator.pop(
+            context, true);
+      } else if (response.statusCode == 401) {
+        await TokenRefreshHandler.refreshAccessToken(context);
+        _addCloth();
       } else {
-        // Handle error
         print('Failed to add cloth. Status code: ${response.statusCode}');
-        // TODO: Add error handling based on your requirements
       }
     } catch (error) {
       print('Failed to add cloth: $error');
-      // TODO: Add error handling based on your requirements
     }
   }
 
   void _selectClothType(String clothType) {
     setState(() {
       selectedType = clothType;
-      selectedSize = ''; // Reset selected size when cloth type changes
-      selectedShoeSize = ''; // Reset selected shoe size when cloth type changes
+      selectedSize = '';
+      selectedShoeSize = '';
     });
   }
 
@@ -92,7 +90,9 @@ class _AddClothPageState extends State<AddClothPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
+        backgroundColor: Colors.white,
         title: Text('옷 추가'),
       ),
       body: Padding(
@@ -102,17 +102,25 @@ class _AddClothPageState extends State<AddClothPage> {
           children: [
             Text('옷 종류'),
             SizedBox(height: 10),
-            Row(
+            Wrap(
               children: [
                 for (String clothType in clothTypes)
-                  ElevatedButton(
-                    onPressed: () {
-                      _selectClothType(clothType);
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: selectedType == clothType ? Colors.green : null,
+                  Padding(
+                    padding: EdgeInsets.only(right: 10),
+                    child: ElevatedButton(
+                      onPressed: () {
+                        _selectClothType(clothType);
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: selectedType == clothType
+                            ? Colors.black
+                            : Colors.white,
+                        foregroundColor: selectedType == clothType
+                            ? Colors.white
+                            : Colors.grey,
+                      ),
+                      child: Text(clothType),
                     ),
-                    child: Text(clothType),
                   ),
               ],
             ),
@@ -122,17 +130,25 @@ class _AddClothPageState extends State<AddClothPage> {
                 children: [
                   Text('사이즈'),
                   SizedBox(height: 10),
-                  Row(
+                  Wrap(
                     children: [
                       for (String size in clothSizes)
-                        ElevatedButton(
-                          onPressed: () {
-                            _selectSize(size);
-                          },
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: selectedSize == size ? Colors.green : null,
+                        Padding(
+                          padding: EdgeInsets.only(right: 10),
+                          child: ElevatedButton(
+                            onPressed: () {
+                              _selectSize(size);
+                            },
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: selectedSize == size
+                                  ? Colors.black
+                                  : Colors.white,
+                              foregroundColor: selectedSize == size
+                                  ? Colors.white
+                                  : Colors.grey,
+                            ),
+                            child: Text(size),
                           ),
-                          child: Text(size),
                         ),
                     ],
                   ),
@@ -143,17 +159,25 @@ class _AddClothPageState extends State<AddClothPage> {
                 children: [
                   Text('신발 사이즈'),
                   SizedBox(height: 10),
-                  Row(
+                  Wrap(
                     children: [
                       for (String shoeSize in shoeSizes)
-                        ElevatedButton(
-                          onPressed: () {
-                            _selectShoeSize(shoeSize);
-                          },
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: selectedShoeSize == shoeSize ? Colors.green : null,
+                        Padding(
+                          padding: EdgeInsets.only(right: 10),
+                          child: ElevatedButton(
+                            onPressed: () {
+                              _selectShoeSize(shoeSize);
+                            },
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: selectedShoeSize == shoeSize
+                                  ? Colors.black
+                                  : Colors.white,
+                              foregroundColor: selectedShoeSize == shoeSize
+                                  ? Colors.white
+                                  : Colors.grey,
+                            ),
+                            child: Text(shoeSize),
                           ),
-                          child: Text(shoeSize),
                         ),
                     ],
                   ),
@@ -162,12 +186,30 @@ class _AddClothPageState extends State<AddClothPage> {
             SizedBox(height: 16),
             TextField(
               controller: informationController,
-              decoration: InputDecoration(labelText: 'Information'),
+              decoration: InputDecoration(
+                labelText: '옷 정보',
+                focusedBorder: UnderlineInputBorder(
+                  borderSide: BorderSide(
+                    color: Colors.black,
+                  ),
+                ),
+                labelStyle: TextStyle(
+                  color: Colors.black,
+                ),
+              ),
             ),
             SizedBox(height: 16),
             ElevatedButton(
               onPressed: _addCloth,
-              child: Text('Add Cloth'),
+              child: Text(
+                '추가',
+                style: TextStyle(
+                  color: Colors.white,
+                ),
+              ),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.black,
+              ),
             ),
           ],
         ),

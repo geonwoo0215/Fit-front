@@ -24,7 +24,6 @@ class _CreatePostStep1State extends State<CreatePostStep1> {
   }
 
   void _navigateToNextStep() {
-    // Navigate to the next step (CreatePostStep2) with the selected image path
     if (selectedImagePath != null) {
       Navigator.push(
         context,
@@ -33,7 +32,6 @@ class _CreatePostStep1State extends State<CreatePostStep1> {
         ),
       );
     } else {
-      // Handle case where no image is selected
       print('Please select a photo first.');
     }
   }
@@ -46,7 +44,6 @@ class _CreatePostStep1State extends State<CreatePostStep1> {
         backgroundColor: Colors.white,
         title: Text('게시물 사진'),
         actions: [
-          // Add a button to the AppBar to navigate to the next step
           IconButton(
             onPressed: _navigateToNextStep,
             icon: Icon(Icons.arrow_forward),

@@ -52,7 +52,7 @@ class _EmailInputPageState extends State<EmailInputPage> {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(message),
-        duration: Duration(seconds: 3), // 메시지가 표시되는 시간 설정
+        duration: Duration(seconds: 3),
       ),
     );
   }

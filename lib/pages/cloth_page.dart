@@ -3,7 +3,7 @@ import 'package:fit_fe/models/cloth_response.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'add_cloth_page.dart';
-
+import 'package:fit_fe/handler/token_refresh_handler.dart';
 class ClothsPage extends StatefulWidget {
   @override
   _ClothsPageState createState() => _ClothsPageState();
@@ -30,7 +30,7 @@ class _ClothsPageState extends State<ClothsPage> {
       final response = await dio.get(
         apiUrl,
         queryParameters: {
-          'type': clothType, // Add type as a query parameter
+          'type': clothType,
         },
         options: Options(
           headers: {
@@ -45,6 +45,9 @@ class _ClothsPageState extends State<ClothsPage> {
           clothResponses = jsonResponse.map((item) => ClothResponse.fromJson(item)).toList();
           isLoading = false;
         });
+      } else if (response.statusCode == 401) {
+        await TokenRefreshHandler.refreshAccessToken(context);
+        await fetchClothContents(clothType);
       } else {
         print('Failed to fetch cloth list. Status code: ${response.statusCode}');
         setState(() {
@@ -66,7 +69,6 @@ class _ClothsPageState extends State<ClothsPage> {
     );
 
     if (refreshClothList == true) {
-      // 새로 고침이 필요한 경우
       fetchClothContents(null);
     }
   }
@@ -74,30 +76,45 @@ class _ClothsPageState extends State<ClothsPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        ElevatedButton(
-          onPressed: _navigateToAddClothPage,
-          child: Text('옷 추가'),
-        ),
-        Expanded(
-          child: isLoading
-              ? Center(child: CircularProgressIndicator())
-              : (clothResponses.isEmpty
-              ? Center(child: Text('에러 또는 데이터를 불러올 수 없습니다.'))
-              : ListView.builder(
-            shrinkWrap: true,
-            itemCount: clothResponses.length,
-            itemBuilder: (context, index) {
-              return ListTile(
-                title: Text(clothResponses[index].information),
-                subtitle: Text(
-                    '옷 종류: ${clothResponses[index].type}, Size: ${clothResponses[index].size}'),
-              );
-            },
-          )),
-        ),
-      ],
+    return Scaffold(
+      backgroundColor: Colors.white,
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+        title: Text('옷 목록'),
+      ),
+      body: Column(
+        children: [
+          ElevatedButton(
+            onPressed: _navigateToAddClothPage,
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.black,
+            ),
+            child: Text(
+              '옷 추가',
+              style: TextStyle(
+                color: Colors.white,
+              ),
+            ),
+          ),
+          Expanded(
+            child: isLoading
+                ? Center(child: CircularProgressIndicator())
+                : (clothResponses.isEmpty
+                ? Center(child: Text('에러 또는 데이터를 불러올 수 없습니다.'))
+                : ListView.builder(
+              shrinkWrap: true,
+              itemCount: clothResponses.length,
+              itemBuilder: (context, index) {
+                return ListTile(
+                  title: Text(clothResponses[index].information),
+                  subtitle: Text(
+                      '옷 종류: ${clothResponses[index].type}, Size: ${clothResponses[index].size}'),
+                );
+              },
+            )),
+          ),
+        ],
+      ),
     );
   }
 }

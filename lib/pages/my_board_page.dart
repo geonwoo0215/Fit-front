@@ -29,7 +29,7 @@ class MyBoardsPage extends StatelessWidget {
   Widget _buildGridItem(BuildContext context, BoardResponse board) {
     return GestureDetector(
       onTap: () {
-        // Handle item tap if needed
+
       },
       child: Card(
         elevation: 2.0,

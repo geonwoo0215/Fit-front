@@ -58,7 +58,6 @@ class _HomePageState extends State<HomePage> {
             print('Selected item: $index');
           }
           if (index == 2) {
-            // Navigate to the CreatePostStep1 page
             Navigator.push(
               context,
               MaterialPageRoute(

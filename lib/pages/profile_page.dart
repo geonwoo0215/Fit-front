@@ -4,6 +4,10 @@ import 'package:fit_fe/models/board_response.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:fit_fe/models/page_response.dart';
 import 'package:fit_fe/pages/my_board_page.dart';
+import 'package:fit_fe/models/member_response.dart';
+import 'package:fit_fe/handler/token_refresh_handler.dart';
+import 'package:fit_fe/pages/cloth_page.dart';
+
 class ProfilePage extends StatefulWidget {
   @override
   _ProfilePageState createState() => _ProfilePageState();
@@ -14,11 +18,12 @@ class _ProfilePageState extends State<ProfilePage> {
   List<BoardResponse> boardResponses = [];
   final FlutterSecureStorage _secureStorage = FlutterSecureStorage();
   bool isLoading = true;
+  late MemberResponse memberResponse = MemberResponse(email: 'zzz', nickname: '');
 
   @override
   void initState() {
     super.initState();
-    fetchMyBoards();
+    fetchMyProfile();
   }
 
   Future<void> fetchMyBoards() async {
@@ -26,7 +31,7 @@ class _ProfilePageState extends State<ProfilePage> {
 
     try {
       final response = await dio.get(
-        'https://10.0.2.2:8080/boards',
+        'http://10.0.2.2:8080/boards',
         options: Options(
           headers: {
             'Authorization': 'Bearer $jwtToken',
@@ -44,11 +49,9 @@ class _ProfilePageState extends State<ProfilePage> {
           isLoading = false;
           boardResponses = pageResponse.content;
         });
-      } else {
-        print('게시판 목록을 가져오지 못했습니다. 상태 코드: ${response.statusCode}');
-        setState(() {
-          isLoading = false;
-        });
+      } else if (response.statusCode == 401) {
+        await TokenRefreshHandler.refreshAccessToken(context);
+        await fetchMyBoards();
       }
     } catch (error) {
       print('게시판 목록을 가져오지 못했습니다.: $error');
@@ -66,6 +69,17 @@ class _ProfilePageState extends State<ProfilePage> {
       ),
     );
   }
+
+  void _navigateToClothsPage() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => ClothsPage(),
+      ),
+    );
+  }
+
+
 
   void _logout() async {
     try {
@@ -88,11 +102,55 @@ class _ProfilePageState extends State<ProfilePage> {
         print('로그아웃 성공. 상태 코드: ${response.statusCode}');
         Navigator.pushReplacementNamed(context, '/login');
         
-      } else {
+      } else if (response.statusCode == 401) {
+        await TokenRefreshHandler.refreshAccessToken(context);
+        _logout();
+      }else {
         print('로그아웃 실패. 상태 코드: ${response.statusCode}');
       }
     } catch (error) {
       print('로그아웃 실패: $error');
+    }
+  }
+
+  Future<void> fetchMyProfile() async {
+    String? jwtToken = await _secureStorage.read(key: 'jwt_token');
+
+    try {
+      final response = await dio.get(
+        'http://10.0.2.2:8080/members/my-profile',
+        options: Options(
+          headers: {
+            'Authorization': 'Bearer $jwtToken',
+          },
+          validateStatus: (status) {
+          return status == 401 || status == 200 || status == 400;
+        },
+        ),
+      );
+
+      if (response.statusCode == 200) {
+
+
+        print('프로필을 성공적으로 가져왔습니다. 응답 데이터: ${response.data}');
+        memberResponse = MemberResponse.fromJson(response.data['data']);
+        setState (() {
+          isLoading = false;
+        });
+      }else if (response.statusCode == 401 || response.statusCode == 400) {
+        await TokenRefreshHandler.refreshAccessToken(context);
+        await fetchMyProfile();
+      } else {
+        print('프로필을 가져오지 못했습니다. 상태 코드: ${response.statusCode}');
+        setState(() {
+          isLoading = false;
+        });
+      }
+    } catch (error) {
+      print('프로필을 가져오지 못했습니다.: $error');
+      setState(() {
+        isLoading = false;
+      });
     }
   }
 
@@ -104,7 +162,9 @@ class _ProfilePageState extends State<ProfilePage> {
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(
+          isLoading
+              ? Text('Loading...')
+              : Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               CircleAvatar(
@@ -116,7 +176,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    '사용자 이름',
+                    memberResponse.nickname,
                     style: TextStyle(
                       fontSize: 20.0,
                       fontWeight: FontWeight.bold,
@@ -124,7 +184,7 @@ class _ProfilePageState extends State<ProfilePage> {
                   ),
                   SizedBox(height: 8.0),
                   Text(
-                    '이메일 주소',
+                    memberResponse.email,
                     style: TextStyle(
                       fontSize: 16.0,
                       color: Colors.grey,
@@ -135,24 +195,37 @@ class _ProfilePageState extends State<ProfilePage> {
             ],
           ),
           SizedBox(height: 16.0),
-          ElevatedButton(
-            onPressed: _navigateToMyBoardsPage,
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.white, // Background color
-              foregroundColor: Colors.black, // Text color
-              side: BorderSide(color: Colors.black), // Border color
-            ),
-            child: Text('내 게시물 보기'),
+          Row(
+            children: [
+              ElevatedButton(
+                onPressed: _navigateToMyBoardsPage,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.white,
+                  foregroundColor: Colors.black,
+                  side: BorderSide(color: Colors.black),
+                ),
+                child: Text('내 게시물 보기'),
+              ),
+              SizedBox(width: 16.0),
+              ElevatedButton(
+                onPressed: _navigateToClothsPage,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.white,
+                  foregroundColor: Colors.black,
+                  side: BorderSide(color: Colors.black),
+                ),
+                child: Text('내 옷 보기'),
+              ),
+            ],
           ),
           SizedBox(height: 16.0),
           TextButton(
             onPressed: _logout,
             style: TextButton.styleFrom(
-              backgroundColor: Colors.red, // Text color
+              foregroundColor: Colors.red,
             ),
             child: Text('로그아웃'),
           ),
-
         ],
       ),
     );

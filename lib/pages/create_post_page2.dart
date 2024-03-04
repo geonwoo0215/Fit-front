@@ -4,6 +4,7 @@ import 'package:dio/dio.dart';
 import 'package:fit_fe/models/cloth_response.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:fit_fe/models/save_board_request.dart';
+import 'package:fit_fe/handler/token_refresh_handler.dart';
 
 class CreatePostStep2 extends StatefulWidget {
   final String imagePath;
@@ -24,14 +25,17 @@ class _CreatePostStep2State extends State<CreatePostStep2> {
 
   final FlutterSecureStorage _secureStorage = FlutterSecureStorage();
 
-  List<String> availableWeatherConditions = ['맑음', '비', '흐림', '눈']; // Add more if needed
+  List<String> availableWeatherConditions = ['맑음', '비', '흐림', '눈'];
   String selectedWeather = ''; // Track the selected weather condition
 
-  List<String> availableGroundConditions = ['평범한', '눈길', '미끄러운']; // Add more if needed
+  List<String> availableGroundConditions = ['평범한', '눈길', '미끄러운'];
   String selectedGroundCondition = '';
 
   List<String> availableClothTypes = ['상의', '하의', '신발'];
   String selectedClothType = '';
+
+  List<String> availablePlace = ['결혼식', '외출', '스포츠', '페스티발', '파티'];
+  String selectedPlace = '';
 
   // Variables to store user input
   bool isPublic = true;
@@ -52,7 +56,6 @@ class _CreatePostStep2State extends State<CreatePostStep2> {
 
   @override
   void dispose() {
-    // Dispose controllers to avoid memory leaks
     photoContentController.dispose();
     minTemperatureController.dispose();
     maxTemperatureController.dispose();
@@ -67,7 +70,6 @@ class _CreatePostStep2State extends State<CreatePostStep2> {
         return '002';
       case '신발':
         return '003';
-    // 추가적인 옷 종류가 있을 경우 계속해서 추가
       default:
         return '';
     }
@@ -87,25 +89,21 @@ class _CreatePostStep2State extends State<CreatePostStep2> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              // Display the selected image from Step 1 with adjusted size
               Align(
                 alignment: Alignment.topLeft,
                 child: Image.file(
                   File(widget.imagePath),
-                  height: 100, // 원하는 높이로 조절
-                  width: 100,  // 원하는 너비로 조절
+                  height: 100,
+                  width: 100,
                   fit: BoxFit.cover,
                 ),
               ),
               SizedBox(height: 20),
-              // Additional UI for Step 2
-              // Text field for photo content
               Container(
                 child: TextField(
                   controller: photoContentController,
                   onChanged: (value) {
                     setState(() {
-                      // No need to use value as the controller handles it
                     });
                   },
                   maxLines: null,
@@ -120,7 +118,6 @@ class _CreatePostStep2State extends State<CreatePostStep2> {
                 ),
               ),
               SizedBox(height: 10),
-              // Text fields for min and max temperatures
               Row(
                 children: [
                   Expanded(
@@ -128,7 +125,6 @@ class _CreatePostStep2State extends State<CreatePostStep2> {
                       controller: minTemperatureController,
                       onChanged: (value) {
                         setState(() {
-                          // No need to use value as the controller handles it
                         });
                       },
                       keyboardType: TextInputType.number,
@@ -148,7 +144,6 @@ class _CreatePostStep2State extends State<CreatePostStep2> {
                       controller: maxTemperatureController,
                       onChanged: (value) {
                         setState(() {
-                          // No need to use value as the controller handles it
                         });
                       },
                       keyboardType: TextInputType.number,
@@ -165,65 +160,115 @@ class _CreatePostStep2State extends State<CreatePostStep2> {
                 ],
               ),
               SizedBox(height: 10),
-              // Switch for public visibility
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start, // Align text to the start (left)
-                children: [
-                  Text('날씨 선택'), // Text on a new line
-                  SizedBox(height: 10), // Add vertical spacing between text and buttons
-                  Row(
+              Container(
+                alignment: Alignment.topLeft,
+                child: Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 10),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      for (String weatherCondition in availableWeatherConditions)
-                        Padding(
-                          padding: EdgeInsets.only(right: 10), // Add spacing between buttons
-                          child: ElevatedButton(
-                            onPressed: () {
-                              _selectWeatherOption(weatherCondition);
-                            },
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: selectedWeather == weatherCondition ? Colors.black : Colors.white,
-                              foregroundColor: selectedWeather == weatherCondition ? Colors.white : Colors.grey,
-                              side: BorderSide(
-                                color: selectedWeather == weatherCondition ? Colors.black : Colors.grey,
+                      Text('날씨 선택'),
+                      SizedBox(height: 10),
+                      Wrap(
+                        alignment: WrapAlignment.start,
+                        children: [
+                          for (String weatherCondition in availableWeatherConditions)
+                            Padding(
+                              padding: EdgeInsets.only(right: 10),
+                              child: ElevatedButton(
+                                onPressed: () {
+                                  _selectWeatherOption(weatherCondition);
+                                },
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: selectedWeather == weatherCondition ? Colors.black : Colors.white,
+                                  foregroundColor: selectedWeather == weatherCondition ? Colors.white : Colors.grey,
+                                  side: BorderSide(
+                                    color: selectedWeather == weatherCondition ? Colors.black : Colors.grey,
+                                  ),
+                                ),
+                                child: Text(weatherCondition),
                               ),
                             ),
-                            child: Text(weatherCondition),
-                          ),
-                        ),
+                        ],
+                      ),
                     ],
                   ),
-                ],
+                ),
               ),
               SizedBox(height: 10),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start, // Align text to the start (left)
-                children: [
-                  Text('바닥 상태 선택'), // Text on a new line
-                  SizedBox(height: 10), // Add vertical spacing between text and buttons
-                  Row(
+              Container(
+                alignment: Alignment.topLeft,
+                child: Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 10),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      for (String groundCondition in availableGroundConditions)
-                        Padding(
-                          padding: EdgeInsets.only(right: 10), // Add spacing between buttons
-                          child: ElevatedButton(
-                            onPressed: () {
-                              _selectGroundConditionOption(groundCondition);
-                            },
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: selectedGroundCondition == groundCondition ? Colors.green : Colors.white,
-                              foregroundColor: selectedGroundCondition == groundCondition ? Colors.white : Colors.grey,
-                              side: BorderSide(
-                                color: selectedGroundCondition == groundCondition ? Colors.green : Colors.grey,
+                      Text('바닥 상태 선택'),
+                      SizedBox(height: 10),
+                      Wrap(
+                        alignment: WrapAlignment.start,
+                        children: [
+                          for (String groundCondition in availableGroundConditions)
+                            Padding(
+                              padding: EdgeInsets.only(right: 10),
+                              child: ElevatedButton(
+                                onPressed: () {
+                                  _selectGroundConditionOption(groundCondition);
+                                },
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: selectedGroundCondition == groundCondition ? Colors.black : Colors.white,
+                                  foregroundColor: selectedGroundCondition == groundCondition ? Colors.white : Colors.grey,
+                                  side: BorderSide(
+                                    color: selectedGroundCondition == groundCondition ? Colors.black : Colors.grey,
+                                  ),
+                                ),
+                                child: Text(groundCondition),
                               ),
                             ),
-                            child: Text(groundCondition),
-                          ),
-                        ),
+                        ],
+                      ),
                     ],
                   ),
-                ],
+                ),
               ),
               SizedBox(height: 10),
+              Container(
+                alignment: Alignment.topLeft,
+                child: Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 10),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text('장소 선택'),
+                      SizedBox(height: 10),
+                      Wrap(
+                        alignment: WrapAlignment.start,
+                        children: [
+                          for (String place in availablePlace)
+                            Padding(
+                              padding: EdgeInsets.only(right: 10),
+                              child: ElevatedButton(
+                                onPressed: () {
+                                  _selectPlaceOption(place);
+                                },
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: selectedPlace == place ? Colors.black : Colors.white,
+                                  foregroundColor: selectedPlace == place ? Colors.white : Colors.grey,
+                                  side: BorderSide(
+                                    color: selectedPlace == place ? Colors.black : Colors.grey,
+                                  ),
+                                ),
+                                child: Text(place),
+                              ),
+                            ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              SizedBox(height: 10),
+
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -244,12 +289,10 @@ class _CreatePostStep2State extends State<CreatePostStep2> {
                       SizedBox(width: 10),
                       ElevatedButton(
                         onPressed: selectedTop.isEmpty
-                            ? null // Disable the button if selectedTop is empty
+                            ? null
                             : () {
                           setState(() {
-                            // Toggle between '적절' and '부적절'
                             isTopAppropriate = !isTopAppropriate;
-                            // Update the appropriateness in the map using the selectedTopId
                             clothAppropriates[selectedTopId] = isTopAppropriate;
                           });
                         },
@@ -283,12 +326,10 @@ class _CreatePostStep2State extends State<CreatePostStep2> {
                       SizedBox(width: 10),
                       ElevatedButton(
                         onPressed: selectedBottom.isEmpty
-                            ? null // Disable the button if selectedTop is empty
+                            ? null
                             : () {
                           setState(() {
-                            // Toggle between '적절' and '부적절'
                             isBottomAppropriate = !isBottomAppropriate;
-                            // Update the appropriateness in the map using the selectedTopId
                             clothAppropriates[selectedBottomId] = isBottomAppropriate;
                           });
                         },
@@ -322,12 +363,10 @@ class _CreatePostStep2State extends State<CreatePostStep2> {
                       SizedBox(width: 10),
                       ElevatedButton(
                         onPressed: selectedShoes.isEmpty
-                            ? null // Disable the button if selectedTop is empty
+                            ? null
                             : () {
                           setState(() {
-                            // Toggle between '적절' and '부적절'
                             isShoesAppropriate = !isShoesAppropriate;
-                            // Update the appropriateness in the map using the selectedTopId
                             clothAppropriates[selectedShoesId] = isShoesAppropriate;
                           });
                         },
@@ -343,15 +382,6 @@ class _CreatePostStep2State extends State<CreatePostStep2> {
               SizedBox(height: 20),
               ElevatedButton(
                 onPressed: () async {
-                  // Add functionality for Step 2 button press
-                  print('Step 2 button pressed');
-                  print('내용: ${photoContentController.text}');
-                  print('최저 기온: ${minTemperatureController.text}');
-                  print('최고 기온: ${maxTemperatureController.text}');
-                  print('공개 여부: $isPublic');
-                  print('Weather: $selectedWeather');
-                  print('Ground Condition: $selectedGroundCondition');
-                  print('clothAppropriates: $clothAppropriates');
                   await uploadImage([File(widget.imagePath)]);
 
                   Navigator.popUntil(context, ModalRoute.withName('/home'));
@@ -371,15 +401,20 @@ class _CreatePostStep2State extends State<CreatePostStep2> {
   }
   void _selectWeatherOption(String weatherCondition) {
     setState(() {
-      // If already selected, revert to an empty string (unselected state)
       selectedWeather = selectedWeather == weatherCondition ? '' : weatherCondition;
     });
   }
 
   void _selectGroundConditionOption(String groundCondition) {
     setState(() {
-      // If already selected, revert to an empty string (unselected state)
       selectedGroundCondition = selectedGroundCondition == groundCondition ? '' : groundCondition;
+    });
+  }
+
+
+  void _selectPlaceOption(String place) {
+    setState(() {
+      selectedPlace = selectedPlace == place ? '' : place;
     });
   }
 
@@ -404,7 +439,6 @@ class _CreatePostStep2State extends State<CreatePostStep2> {
         ),);
 
       if (response.statusCode == 201) {
-        // Image upload successful
         List<String> uploadedUrls = List<String>.from(response.data['data']);
         SaveBoardRequest boardRequest = SaveBoardRequest(
           content: photoContentController.text,
@@ -413,13 +447,17 @@ class _CreatePostStep2State extends State<CreatePostStep2> {
           open: isPublic,
           weather: selectedWeather,
           roadCondition: selectedGroundCondition,
+          place : selectedPlace,
           clothAppropriates: clothAppropriates,
           imageUrls: uploadedUrls,
         );
 
         await createBoard(boardRequest);
-        // Do something with the uploadedUrls if needed
+
         print('Image uploaded successfully. URLs: $uploadedUrls');
+      }else if (response.statusCode == 401) {
+        await TokenRefreshHandler.refreshAccessToken(context);
+        await uploadImage(images);
       } else {
         // Image upload failed
         print('Failed to upload image. Status code: ${response.statusCode}');
@@ -431,13 +469,13 @@ class _CreatePostStep2State extends State<CreatePostStep2> {
 
   Future<void> createBoard(SaveBoardRequest boardRequest) async {
     try {
-      String apiUrl = 'http://10.0.2.2:8080/boards'; // 실제 API 엔드포인트로 교체
+      String apiUrl = 'http://10.0.2.2:8080/boards';
 
       String? jwtToken = await _secureStorage.read(key: 'jwt_token');
 
       Response response = await dio.post(
         apiUrl,
-        data: boardRequest.toJson(), // SaveBoardRequest에 toJson 메서드가 있다고 가정합니다.
+        data: boardRequest.toJson(),
         options: Options(
           headers: {
             'Authorization': 'Bearer $jwtToken',
@@ -477,12 +515,12 @@ class _CreatePostStep2State extends State<CreatePostStep2> {
       print('Response Data: ${response.data}');
 
       if (response.statusCode == 200) {
-        // Convert the dynamic map data to a List<ClothResponse>
+
         List<ClothResponse> clothList = (response.data['data'] as List)
             .map((item) => ClothResponse.fromJson(item))
             .toList();
 
-        // Display the cloth list in a dialog
+
         _showClothListDialog(clothList, clothType);
       } else {
         print('Failed to fetch cloth list. Status code: ${response.statusCode}');
@@ -521,7 +559,7 @@ class _CreatePostStep2State extends State<CreatePostStep2> {
                         selectedShoesId = clothId.toString();
                         clothAppropriates[selectedShoesId] = isShoesAppropriate;
                         break;
-                    // 추가적인 옷 종류가 있을 경우 계속해서 추가
+
                     }
                   });
                   Navigator.of(context).pop();

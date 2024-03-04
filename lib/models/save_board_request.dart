@@ -5,6 +5,7 @@ class SaveBoardRequest {
   final bool open;
   final String weather;
   final String roadCondition;
+  final String place;
   final Map<String, bool> clothAppropriates;
   final List<String> imageUrls;
 
@@ -14,12 +15,12 @@ class SaveBoardRequest {
     required this.highestTemperature,
     required this.open,
     required this.weather,
+    required this.place,
     required this.roadCondition,
     required this.clothAppropriates,
     required this.imageUrls,
   });
 
-  // Convert the object to a JSON format
   Map<String, dynamic> toJson() {
     return {
       'content': content,
@@ -28,6 +29,7 @@ class SaveBoardRequest {
       'open': open,
       'weather': weather,
       'roadCondition': roadCondition,
+      'place': place,
       'clothAppropriates': clothAppropriates,
       'imageUrls': imageUrls,
     };

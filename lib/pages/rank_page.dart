@@ -4,9 +4,9 @@ import 'package:dio/dio.dart';
 import 'package:fit_fe/models/page_response.dart';
 import 'package:fit_fe/models/board_response.dart';
 import 'package:fit_fe/pages/board_detail_page.dart';
+import 'package:fit_fe/handler/token_refresh_handler.dart';
 
 class RankPage extends StatefulWidget {
-  final FlutterSecureStorage _secureStorage = FlutterSecureStorage();
   @override
   _RankPageState createState() => _RankPageState();
 }
@@ -22,17 +22,17 @@ class _RankPageState extends State<RankPage> {
   @override
   void initState() {
     super.initState();
-    fetchRankContents();
+    fetchDailyRankContents();
   }
 
-  Future<void> fetchRankContents() async {
+  Future<void> fetchDailyRankContents() async {
     final dio = Dio();
-    const String apiUrl = '';
+    const String dailyApiUrl = 'http://10.0.2.2:8080/boards/daily-ranking';
     String? jwtToken = await _secureStorage.read(key: 'jwt_token');
 
     try {
       final response = await dio.get(
-        apiUrl,
+        dailyApiUrl,
         options: Options(
           headers: {
             'Authorization': 'Bearer $jwtToken',
@@ -49,6 +49,45 @@ class _RankPageState extends State<RankPage> {
           isLoading = false;
           boardResponses = pageResponse.content;
         });
+      } else if (response.statusCode == 401) {
+        await TokenRefreshHandler.refreshAccessToken(context);
+        await fetchDailyRankContents();
+      }
+    } catch (error) {
+      print('게시판 목록을 가져오지 못했습니다.: $error');
+      setState(() {
+        isLoading = false;
+      });
+    }
+  }
+
+  Future<void> fetchWeeklyRankContents() async {
+    final dio = Dio();
+    const String weeklyApiUrl = 'http://10.0.2.2:8080/boards/weekly-ranking';
+    String? jwtToken = await _secureStorage.read(key: 'jwt_token');
+
+    try {
+      final response = await dio.get(
+        weeklyApiUrl,
+        options: Options(
+          headers: {
+            'Authorization': 'Bearer $jwtToken',
+          },
+        ),
+      );
+
+      if (response.statusCode == 200) {
+        PageResponse pageResponse = PageResponse.fromJson(response.data);
+
+        print('Raw Response: ${response.data.toString()}');
+
+        setState(() {
+          isLoading = false;
+          boardResponses = pageResponse.content;
+        });
+      } else if (response.statusCode == 401) {
+        await TokenRefreshHandler.refreshAccessToken(context);
+        await fetchWeeklyRankContents();
       } else {
         print('게시판 목록을 가져오지 못했습니다. 상태 코드: ${response.statusCode}');
         setState(() {
@@ -142,7 +181,7 @@ class _RankPageState extends State<RankPage> {
                   isDailyRankingSelected = true;
                   isLoading = true;
                 });
-                fetchRankContents();
+                fetchDailyRankContents(); // Call daily ranking API
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: isDailyRankingSelected ? Colors.black : Colors.white,
@@ -158,7 +197,7 @@ class _RankPageState extends State<RankPage> {
                   isDailyRankingSelected = false;
                   isLoading = true;
                 });
-                fetchRankContents();
+                fetchWeeklyRankContents();
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: !isDailyRankingSelected ? Colors.black : Colors.white,
@@ -169,10 +208,12 @@ class _RankPageState extends State<RankPage> {
             ),
           ],
         ),
-        isLoading
-            ? CircularProgressIndicator()
-            : Expanded(
-          child: _buildGrid(boardResponses),
+        Visibility(
+          visible: isLoading,
+          child: CircularProgressIndicator(),
+          replacement: Expanded(
+            child: _buildGrid(boardResponses),
+          ),
         ),
       ],
     );

@@ -40,6 +40,14 @@ class _SignUpPageState extends State<SignUpPage> {
                 decoration: InputDecoration(
                   labelText: '비밀번호',
                   helperText: '영문 대소문자, 숫자, 특수문자를 포함한 8자 이상',
+                  focusedBorder: UnderlineInputBorder(
+                    borderSide: BorderSide(
+                      color: Colors.black,
+                    ),
+                  ),
+                  labelStyle: TextStyle(
+                    color: Colors.black,
+                  ),
                 ),
                 obscureText: true,
               ),
@@ -52,6 +60,14 @@ class _SignUpPageState extends State<SignUpPage> {
                 decoration: InputDecoration(
                   labelText: '비밀번호 확인',
                   errorText: !_passwordsMatch ? '비밀번호가 일치하지 않습니다.' : null,
+                  focusedBorder: UnderlineInputBorder(
+                    borderSide: BorderSide(
+                      color: Colors.black,
+                    ),
+                  ),
+                  labelStyle: TextStyle(
+                    color: Colors.black,
+                  ),
                 ),
                 obscureText: true,
                 onChanged: (value) {
@@ -66,7 +82,17 @@ class _SignUpPageState extends State<SignUpPage> {
               width: MediaQuery.of(context).size.width * 0.8,
               child: TextFormField(
                 controller: _nicknameController,
-                decoration: InputDecoration(labelText: '닉네임'),
+                decoration: InputDecoration(
+                  labelText: '닉네임',
+                  focusedBorder: UnderlineInputBorder(
+                    borderSide: BorderSide(
+                      color: Colors.black,
+                    ),
+                  ),
+                  labelStyle: TextStyle(
+                    color: Colors.black,
+                  ),
+                ),
               ),
             ),
             SizedBox(height: 16.0),
@@ -103,7 +129,6 @@ class _SignUpPageState extends State<SignUpPage> {
       String nickname = _nicknameController.text;
 
       if (!_passwordsMatch) {
-        // 비밀번호 확인이 일치하지 않을 경우 처리
         print('비밀번호가 일치하지 않습니다.');
         return;
       }
@@ -125,16 +150,16 @@ class _SignUpPageState extends State<SignUpPage> {
       if (response.statusCode == 201) {
         print('가입 성공: ${response.data}');
         print('가입이 완료되었습니다!');
-        // 가입 성공 시 다음 페이지로 이동하거나 성공 메시지를 표시할 수 있습니다.
-        Navigator.pushReplacement(
-            context, MaterialPageRoute(builder: (context) => LoginPage()));
+        Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(builder: (context) => LoginPage()),
+          (route) => false,
+        );
       } else {
         print('가입 실패: ${response.statusCode}');
-        // 실패 시 사용자에게 알림을 표시할 수 있습니다.
       }
     } catch (e) {
       print('Error during sign-up: $e');
-      // 예외 발생 시 사용자에게 알림을 표시할 수 있습니다.
     }
   }
 }

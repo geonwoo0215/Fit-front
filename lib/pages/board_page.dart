@@ -4,7 +4,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:fit_fe/pages/board_detail_page.dart';
 import 'package:fit_fe/models/page_response.dart';
-
+import 'package:fit_fe/handler/token_refresh_handler.dart';
 class BoardPage extends StatefulWidget {
   @override
   _BoardListPageState createState() => _BoardListPageState();
@@ -23,7 +23,7 @@ class _BoardListPageState extends State<BoardPage> {
 
   Future<void> fetchBoardContents() async {
     final dio = Dio();
-    const String apiUrl = 'http://10.0.2.2:8080/boards'; // API 엔드포인트를 조정하세요
+    const String apiUrl = 'http://10.0.2.2:8080/boards';
 
     String? jwtToken = await _secureStorage.read(key: 'jwt_token');
 
@@ -34,7 +34,11 @@ class _BoardListPageState extends State<BoardPage> {
           headers: {
             'Authorization': 'Bearer $jwtToken',
           },
+          validateStatus: (status) {
+            return status == 401 || status == 200 || status ==400;
+          },
         ),
+
       );
 
       if (response.statusCode == 200) {
@@ -46,6 +50,9 @@ class _BoardListPageState extends State<BoardPage> {
           isLoading = false;
           boardResponses = pageResponse.content;
         });
+      } else if (response.statusCode == 401) {
+        await TokenRefreshHandler.refreshAccessToken(context);
+        await fetchBoardContents();
       } else {
         print('게시판 목록을 가져오지 못했습니다. 상태 코드: ${response.statusCode}');
         setState(() {

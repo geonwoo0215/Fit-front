@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:fit_fe/pages/email_input_page.dart';
 import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
@@ -159,17 +161,15 @@ class _LoginPageState extends State<LoginPage> {
       Response response = await dio.post(apiUrl, data: formData);
 
       if (response.statusCode == 200) {
-        print('로그인 성공');
         String? authorizationHeader = response.headers.value('Authorization');
         if (authorizationHeader != null) {
           String token = authorizationHeader;
           // 토큰 저장
           await _secureStorage.write(key: 'jwt_token', value: token);
-          List<String> cookies = response.headers['set-cookie'] ?? [];
-          for (String cookie in cookies) {
-            print('Set-Cookie: $cookie');
-          }
-
+          String? cookieValues = response.headers['set-cookie']?[0];
+          Cookie cookie  = Cookie.fromSetCookieValue(cookieValues!);
+          String cookieString = cookie.toString();
+          await _secureStorage.write(key: 'refresh_token', value: cookieString);
           print('로그인 성공 : $token');
           Navigator.pushReplacementNamed(context, '/home');
         } else {

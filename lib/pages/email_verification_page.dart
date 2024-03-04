@@ -14,7 +14,7 @@ class EmailVerificationPage extends StatefulWidget {
 
 class _EmailVerificationPageState extends State<EmailVerificationPage> {
   bool _isTimerRunning = true;
-  int _timerSeconds = 300; // 5분
+  int _timerSeconds = 300;
   late Timer _timer;
 
   Dio dio = Dio();
@@ -22,7 +22,7 @@ class _EmailVerificationPageState extends State<EmailVerificationPage> {
   TextEditingController _verificationCodeController = TextEditingController();
 
   bool _isVerificationCodeComplete() {
-    return _verificationCodeController.text.length == 5; // 5자리 인증번호인 경우
+    return _verificationCodeController.text.length == 5;
   }
 
   @override
@@ -105,7 +105,6 @@ class _EmailVerificationPageState extends State<EmailVerificationPage> {
             ),
             SizedBox(height: 16.0),
 
-            // 이메일 인증번호 입력란
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 40.0),
               child: TextField(
@@ -129,7 +128,6 @@ class _EmailVerificationPageState extends State<EmailVerificationPage> {
                 cursorColor: Colors.black,
                 keyboardType: TextInputType.number,
                 onChanged: (value) {
-                  // Handle onChanged if needed
                 },
               ),
             ),
@@ -144,7 +142,7 @@ class _EmailVerificationPageState extends State<EmailVerificationPage> {
             SizedBox(height: 16.0),
             Container(
               width: MediaQuery.of(context).size.width *
-                  0.8, // 80% of the screen width
+                  0.8,
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
               child: ElevatedButton(
                 onPressed: () {

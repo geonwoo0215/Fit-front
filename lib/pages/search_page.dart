@@ -4,7 +4,7 @@ import 'package:fit_fe/models/page_response.dart';
 import 'package:fit_fe/pages/board_detail_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-
+import 'package:fit_fe/handler/token_refresh_handler.dart';
 class SearchPage extends StatefulWidget {
   @override
   _SearchPageState createState() => _SearchPageState();
@@ -392,7 +392,7 @@ class _SearchPageState extends State<SearchPage> {
     );
   }
 
-  void _searchPosts() async {
+  Future<void> _searchPosts() async {
     String minTemperature = _minTemperatureController.text;
     String maxTemperature = _maxTemperatureController.text;
 
@@ -429,8 +429,9 @@ class _SearchPageState extends State<SearchPage> {
       if (response.statusCode == 200) {
         PageResponse pageResponse = PageResponse.fromJson(response.data);
         print(response.data);
-      } else {
-        print('Error: ${response.statusCode}');
+      } else if (response.statusCode == 401) {
+        await TokenRefreshHandler.refreshAccessToken(context);
+        await _searchPosts();
       }
     } catch (error) {
       print('Dio Error: $error');
