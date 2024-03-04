@@ -1,10 +1,11 @@
-import 'package:flutter/material.dart';
-import 'package:fit_fe/models/board_response.dart';
 import 'package:dio/dio.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:fit_fe/pages/board_detail_page.dart';
-import 'package:fit_fe/models/page_response.dart';
 import 'package:fit_fe/handler/token_refresh_handler.dart';
+import 'package:fit_fe/models/board_response.dart';
+import 'package:fit_fe/models/page_response.dart';
+import 'package:fit_fe/pages/board_detail_page.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+
 class BoardPage extends StatefulWidget {
   @override
   _BoardListPageState createState() => _BoardListPageState();
@@ -35,10 +36,9 @@ class _BoardListPageState extends State<BoardPage> {
             'Authorization': 'Bearer $jwtToken',
           },
           validateStatus: (status) {
-            return status == 401 || status == 200 || status ==400;
+            return status == 401 || status == 200 || status == 400;
           },
         ),
-
       );
 
       if (response.statusCode == 200) {
@@ -75,20 +75,20 @@ class _BoardListPageState extends State<BoardPage> {
           child: isLoading
               ? Center(child: CircularProgressIndicator())
               : (boardResponses.isEmpty
-              ? Center(child: Text('에러 또는 데이터를 불러올 수 없습니다.'))
-              : GridView.builder(
-            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 2,
-              mainAxisSpacing: 8.0,
-              crossAxisSpacing: 8.0,
-              childAspectRatio: 0.8,
-            ),
-            itemCount: boardResponses.length,
-            itemBuilder: (context, index) {
-              BoardResponse board = boardResponses[index];
-              return _buildGridItem(board);
-            },
-          )),
+                  ? Center(child: Text('데이터를 불러올 수 없습니다.'))
+                  : GridView.builder(
+                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 2,
+                        mainAxisSpacing: 8.0,
+                        crossAxisSpacing: 8.0,
+                        childAspectRatio: 0.8,
+                      ),
+                      itemCount: boardResponses.length,
+                      itemBuilder: (context, index) {
+                        BoardResponse board = boardResponses[index];
+                        return _buildGridItem(board);
+                      },
+                    )),
         ),
       ],
     );

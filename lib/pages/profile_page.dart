@@ -162,7 +162,7 @@ class _ProfilePageState extends State<ProfilePage> {
                   children: [
                     CircleAvatar(
                       radius: 50,
-                      backgroundColor: Colors.grey,
+                      backgroundImage: AssetImage('assets/default_profile.png'),
                     ),
                     SizedBox(width: 16.0),
                     Column(

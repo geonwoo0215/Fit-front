@@ -1,10 +1,11 @@
-import 'package:flutter/material.dart';
-import 'package:fit_fe/models/board_response.dart';
-import 'package:fit_fe/models/cloth_response.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:fit_fe/models/comment_response.dart';
 import 'package:dio/dio.dart';
 import 'package:fit_fe/handler/token_refresh_handler.dart';
+import 'package:fit_fe/models/board_response.dart';
+import 'package:fit_fe/models/cloth_response.dart';
+import 'package:fit_fe/models/comment_response.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+
 class BoardDetailPage extends StatefulWidget {
   final BoardResponse board;
 
@@ -26,7 +27,6 @@ class _BoardDetailPageState extends State<BoardDetailPage> {
   @override
   void initState() {
     super.initState();
-    // 좋아요 상태 초기화
     setState(() {
       isLiked = widget.board.like;
     });
@@ -58,7 +58,6 @@ class _BoardDetailPageState extends State<BoardDetailPage> {
         );
       }
 
-      // 좋아요 상태 토글
       setState(() {
         isLiked = !isLiked;
       });
@@ -128,7 +127,7 @@ class _BoardDetailPageState extends State<BoardDetailPage> {
         setState(() {
           comments.add(newComment);
         });
-      }else if (response.statusCode == 401) {
+      } else if (response.statusCode == 401) {
         await TokenRefreshHandler.refreshAccessToken(context);
         await postComment(comment);
       } else {
@@ -145,7 +144,7 @@ class _BoardDetailPageState extends State<BoardDetailPage> {
         isLoadingComments = true;
       });
 
-      fetchComments(); // 버튼이 눌렸을 때 댓글을 가져옵니다.
+      fetchComments();
     }
 
     showModalBottomSheet(
@@ -201,7 +200,8 @@ class _BoardDetailPageState extends State<BoardDetailPage> {
                 Navigator.pop(context);
 
                 try {
-                  String? jwtToken = await _secureStorage.read(key: 'jwt_token');
+                  String? jwtToken =
+                      await _secureStorage.read(key: 'jwt_token');
                   final response = await dio.delete(
                     'http://10.0.2.2:8080/boards/${widget.board.id}',
                     options: Options(

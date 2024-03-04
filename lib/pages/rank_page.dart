@@ -1,10 +1,10 @@
+import 'package:dio/dio.dart';
+import 'package:fit_fe/handler/token_refresh_handler.dart';
+import 'package:fit_fe/models/board_response.dart';
+import 'package:fit_fe/models/page_response.dart';
+import 'package:fit_fe/pages/board_detail_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:dio/dio.dart';
-import 'package:fit_fe/models/page_response.dart';
-import 'package:fit_fe/models/board_response.dart';
-import 'package:fit_fe/pages/board_detail_page.dart';
-import 'package:fit_fe/handler/token_refresh_handler.dart';
 
 class RankPage extends StatefulWidget {
   @override
@@ -12,7 +12,6 @@ class RankPage extends StatefulWidget {
 }
 
 class _RankPageState extends State<RankPage> {
-
   final FlutterSecureStorage _secureStorage = FlutterSecureStorage();
   List<BoardResponse> boardResponses = [];
   bool isLoading = true;
@@ -181,11 +180,13 @@ class _RankPageState extends State<RankPage> {
                   isDailyRankingSelected = true;
                   isLoading = true;
                 });
-                fetchDailyRankContents(); // Call daily ranking API
+                fetchDailyRankContents();
               },
               style: ElevatedButton.styleFrom(
-                backgroundColor: isDailyRankingSelected ? Colors.black : Colors.white,
-                foregroundColor: isDailyRankingSelected ? Colors.white : Colors.black,
+                backgroundColor:
+                    isDailyRankingSelected ? Colors.black : Colors.white,
+                foregroundColor:
+                    isDailyRankingSelected ? Colors.white : Colors.black,
                 side: BorderSide(color: Colors.black),
               ),
               child: Text('일간 랭킹'),
@@ -200,20 +201,18 @@ class _RankPageState extends State<RankPage> {
                 fetchWeeklyRankContents();
               },
               style: ElevatedButton.styleFrom(
-                backgroundColor: !isDailyRankingSelected ? Colors.black : Colors.white,
-                foregroundColor: !isDailyRankingSelected ? Colors.white : Colors.black,
+                backgroundColor:
+                    !isDailyRankingSelected ? Colors.black : Colors.white,
+                foregroundColor:
+                    !isDailyRankingSelected ? Colors.white : Colors.black,
                 side: BorderSide(color: Colors.black),
               ),
               child: Text('주간 랭킹'),
             ),
           ],
         ),
-        Visibility(
-          visible: isLoading,
-          child: CircularProgressIndicator(),
-          replacement: Expanded(
-            child: _buildGrid(boardResponses),
-          ),
+        Expanded(
+          child: _buildGrid(boardResponses),
         ),
       ],
     );
