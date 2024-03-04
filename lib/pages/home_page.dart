@@ -1,9 +1,9 @@
 import 'package:fit_fe/pages/board_page.dart';
+import 'package:fit_fe/pages/create_post_page1.dart';
 import 'package:fit_fe/pages/profile_page.dart';
 import 'package:fit_fe/pages/rank_page.dart';
-import 'package:flutter/material.dart';
-import 'package:fit_fe/pages/create_post_page1.dart';
 import 'package:fit_fe/pages/search_page.dart';
+import 'package:flutter/material.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -51,7 +51,7 @@ class _HomePageState extends State<HomePage> {
         selectedItemColor: Colors.blue,
         unselectedItemColor: Colors.black,
         onTap: (int index) {
-          if(index!=2){
+          if (index != 2) {
             setState(() {
               _currentIndex = index;
             });
@@ -79,7 +79,7 @@ class _HomePageState extends State<HomePage> {
       case 3:
         return Text('랭킹');
       case 4:
-        return Text('Profile');
+        return Text('프로필');
       default:
         return Text('Fit');
     }

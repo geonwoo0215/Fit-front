@@ -1,5 +1,5 @@
-import 'package:flutter/material.dart';
 import 'package:fit_fe/models/board_response.dart';
+import 'package:flutter/material.dart';
 
 class MyBoardsPage extends StatelessWidget {
   final List<BoardResponse> boardResponses;
@@ -9,7 +9,9 @@ class MyBoardsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
+        backgroundColor: Colors.white,
         title: Text('내 게시물 보기'),
       ),
       body: GridView.builder(
@@ -28,9 +30,7 @@ class MyBoardsPage extends StatelessWidget {
 
   Widget _buildGridItem(BuildContext context, BoardResponse board) {
     return GestureDetector(
-      onTap: () {
-
-      },
+      onTap: () {},
       child: Card(
         elevation: 2.0,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.0)),

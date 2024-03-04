@@ -1,12 +1,12 @@
-import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
-import 'package:fit_fe/models/board_response.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:fit_fe/models/page_response.dart';
-import 'package:fit_fe/pages/my_board_page.dart';
-import 'package:fit_fe/models/member_response.dart';
 import 'package:fit_fe/handler/token_refresh_handler.dart';
+import 'package:fit_fe/models/board_response.dart';
+import 'package:fit_fe/models/member_response.dart';
+import 'package:fit_fe/models/page_response.dart';
 import 'package:fit_fe/pages/cloth_page.dart';
+import 'package:fit_fe/pages/my_board_page.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class ProfilePage extends StatefulWidget {
   @override
@@ -18,7 +18,7 @@ class _ProfilePageState extends State<ProfilePage> {
   List<BoardResponse> boardResponses = [];
   final FlutterSecureStorage _secureStorage = FlutterSecureStorage();
   bool isLoading = true;
-  late MemberResponse memberResponse = MemberResponse(email: 'zzz', nickname: '');
+  late MemberResponse memberResponse = MemberResponse(email: '', nickname: '');
 
   @override
   void initState() {
@@ -79,33 +79,28 @@ class _ProfilePageState extends State<ProfilePage> {
     );
   }
 
-
-
   void _logout() async {
     try {
       String? jwtToken = await _secureStorage.read(key: 'jwt_token');
 
-      final response = await dio.post(
-        'http://10.0.2.2:8080/logout',
-        options: Options(
-          headers: {
-            'Authorization': 'Bearer $jwtToken',
-          },
-          validateStatus: (status) {
-            return status == 302 || status == 200;
-          },
-        )
-      );
+      final response = await dio.post('http://10.0.2.2:8080/logout',
+          options: Options(
+            headers: {
+              'Authorization': 'Bearer $jwtToken',
+            },
+            validateStatus: (status) {
+              return status == 302 || status == 200;
+            },
+          ));
 
       if (response.statusCode == 302) {
         await _secureStorage.delete(key: 'jwt_token');
         print('로그아웃 성공. 상태 코드: ${response.statusCode}');
         Navigator.pushReplacementNamed(context, '/login');
-        
       } else if (response.statusCode == 401) {
         await TokenRefreshHandler.refreshAccessToken(context);
         _logout();
-      }else {
+      } else {
         print('로그아웃 실패. 상태 코드: ${response.statusCode}');
       }
     } catch (error) {
@@ -124,20 +119,18 @@ class _ProfilePageState extends State<ProfilePage> {
             'Authorization': 'Bearer $jwtToken',
           },
           validateStatus: (status) {
-          return status == 401 || status == 200 || status == 400;
-        },
+            return status == 401 || status == 200 || status == 400;
+          },
         ),
       );
 
       if (response.statusCode == 200) {
-
-
         print('프로필을 성공적으로 가져왔습니다. 응답 데이터: ${response.data}');
         memberResponse = MemberResponse.fromJson(response.data['data']);
-        setState (() {
+        setState(() {
           isLoading = false;
         });
-      }else if (response.statusCode == 401 || response.statusCode == 400) {
+      } else if (response.statusCode == 401 || response.statusCode == 400) {
         await TokenRefreshHandler.refreshAccessToken(context);
         await fetchMyProfile();
       } else {
@@ -165,35 +158,35 @@ class _ProfilePageState extends State<ProfilePage> {
           isLoading
               ? Text('Loading...')
               : Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              CircleAvatar(
-                radius: 50,
-                backgroundColor: Colors.grey,
-              ),
-              SizedBox(width: 16.0),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    memberResponse.nickname,
-                    style: TextStyle(
-                      fontSize: 20.0,
-                      fontWeight: FontWeight.bold,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    CircleAvatar(
+                      radius: 50,
+                      backgroundColor: Colors.grey,
                     ),
-                  ),
-                  SizedBox(height: 8.0),
-                  Text(
-                    memberResponse.email,
-                    style: TextStyle(
-                      fontSize: 16.0,
-                      color: Colors.grey,
+                    SizedBox(width: 16.0),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          memberResponse.nickname,
+                          style: TextStyle(
+                            fontSize: 20.0,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        SizedBox(height: 8.0),
+                        Text(
+                          memberResponse.email,
+                          style: TextStyle(
+                            fontSize: 16.0,
+                            color: Colors.grey,
+                          ),
+                        ),
+                      ],
                     ),
-                  ),
-                ],
-              ),
-            ],
-          ),
+                  ],
+                ),
           SizedBox(height: 16.0),
           Row(
             children: [
