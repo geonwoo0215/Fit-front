@@ -67,30 +67,48 @@ class _BoardListPageState extends State<BoardPage> {
     }
   }
 
+  Future<void> _refreshBoardContents() async {
+    // Set loading to true to show the loading indicator during refresh
+    setState(() {
+      isLoading = true;
+    });
+
+    // Fetch the board contents again
+    await fetchBoardContents();
+
+    // Set loading to false after the fetch is complete
+    setState(() {
+      isLoading = false;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Expanded(
-          child: isLoading
-              ? Center(child: CircularProgressIndicator())
-              : (boardResponses.isEmpty
-                  ? Center(child: Text('데이터를 불러올 수 없습니다.'))
-                  : GridView.builder(
-                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 2,
-                        mainAxisSpacing: 8.0,
-                        crossAxisSpacing: 8.0,
-                        childAspectRatio: 0.8,
-                      ),
-                      itemCount: boardResponses.length,
-                      itemBuilder: (context, index) {
-                        BoardResponse board = boardResponses[index];
-                        return _buildGridItem(board);
-                      },
-                    )),
-        ),
-      ],
+    return RefreshIndicator(
+      onRefresh: _refreshBoardContents,
+      child: Column(
+        children: [
+          Expanded(
+            child: isLoading
+                ? Center(child: CircularProgressIndicator())
+                : (boardResponses.isEmpty
+                    ? Center(child: Text('데이터를 불러올 수 없습니다.'))
+                    : GridView.builder(
+                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 2,
+                          mainAxisSpacing: 8.0,
+                          crossAxisSpacing: 8.0,
+                          childAspectRatio: 0.8,
+                        ),
+                        itemCount: boardResponses.length,
+                        itemBuilder: (context, index) {
+                          BoardResponse board = boardResponses[index];
+                          return _buildGridItem(board);
+                        },
+                      )),
+          ),
+        ],
+      ),
     );
   }
 

@@ -1,8 +1,9 @@
 import 'dart:io';
 
-import 'package:fit_fe/pages/email_input_page.dart';
-import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
+import 'package:fit_fe/pages/email_input_page.dart';
+import 'package:fit_fe/pages/find_password_page.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class LoginPage extends StatefulWidget {
@@ -107,7 +108,11 @@ class _LoginPageState extends State<LoginPage> {
                   Container(
                     child: TextButton(
                       onPressed: () {
-                        // TODO: 비밀번호 찾기 기능 추가
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => FindPasswordPage()),
+                        );
                       },
                       child: Text(
                         '비밀번호 찾기',
@@ -158,7 +163,15 @@ class _LoginPageState extends State<LoginPage> {
         'password': password,
       });
 
-      Response response = await dio.post(apiUrl, data: formData);
+      Response response = await dio.post(
+        apiUrl,
+        data: formData,
+        options: Options(
+          validateStatus: (status) {
+            return status == 401 || status == 200 || status == 400;
+          },
+        ),
+      );
 
       if (response.statusCode == 200) {
         String? authorizationHeader = response.headers.value('Authorization');
@@ -167,7 +180,7 @@ class _LoginPageState extends State<LoginPage> {
           // 토큰 저장
           await _secureStorage.write(key: 'jwt_token', value: token);
           String? cookieValues = response.headers['set-cookie']?[0];
-          Cookie cookie  = Cookie.fromSetCookieValue(cookieValues!);
+          Cookie cookie = Cookie.fromSetCookieValue(cookieValues!);
           String cookieString = cookie.toString();
           await _secureStorage.write(key: 'refresh_token', value: cookieString);
           print('로그인 성공 : $token');
@@ -176,7 +189,24 @@ class _LoginPageState extends State<LoginPage> {
           print('토큰을 찾을 수 없습니다.');
         }
       } else {
-        print('로그인 실패');
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              surfaceTintColor: Colors.white,
+              title: Text('로그인 실패'),
+              content: Text('이메일과 비밀번호를 다시 확인해주세요.'),
+              actions: <Widget>[
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop(); // Close the alert
+                  },
+                  child: Text('확인', style: TextStyle(color: Colors.black)),
+                ),
+              ],
+            );
+          },
+        );
       }
     } catch (error) {
       print('오류 발생: $error');

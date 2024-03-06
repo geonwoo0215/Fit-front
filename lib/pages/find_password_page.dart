@@ -1,13 +1,13 @@
 import 'package:dio/dio.dart';
-import 'package:fit_fe/pages/email_verification_page.dart';
+import 'package:fit_fe/pages/find_password_email_verification_page.dart';
 import 'package:flutter/material.dart';
 
-class EmailInputPage extends StatefulWidget {
+class FindPasswordPage extends StatefulWidget {
   @override
-  _EmailInputPageState createState() => _EmailInputPageState();
+  _FindPasswordPageState createState() => _FindPasswordPageState();
 }
 
-class _EmailInputPageState extends State<EmailInputPage> {
+class _FindPasswordPageState extends State<FindPasswordPage> {
   final TextEditingController _signupEmailController = TextEditingController();
   bool _isEmailValid = true;
   Dio dio = Dio();
@@ -27,7 +27,7 @@ class _EmailInputPageState extends State<EmailInputPage> {
         'http://10.0.2.2:8080/members/email',
         queryParameters: {
           'email': _signupEmailController.text,
-          'type': 'signUp'
+          'type': 'password'
         },
       );
 
@@ -35,7 +35,7 @@ class _EmailInputPageState extends State<EmailInputPage> {
         context,
         MaterialPageRoute(
           builder: (context) =>
-              EmailVerificationPage(_signupEmailController.text),
+              FindPasswordEmailVerificationPage(_signupEmailController.text),
         ),
       );
     } catch (e) {
@@ -65,7 +65,7 @@ class _EmailInputPageState extends State<EmailInputPage> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        title: Text('이메일 인증'),
+        title: Text('비밀번호 찾기'),
         leading: IconButton(
           icon: Icon(Icons.arrow_back),
           onPressed: () {
@@ -81,7 +81,7 @@ class _EmailInputPageState extends State<EmailInputPage> {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 40.0),
               child: Text(
-                '연락 가능한 이메일을 작성해 주세요',
+                '비밀번호를 찾으려는 이메일',
                 style: TextStyle(fontSize: 18.0, color: Colors.grey),
               ),
             ),

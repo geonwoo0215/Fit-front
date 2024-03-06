@@ -160,10 +160,10 @@ class _ProfilePageState extends State<ProfilePage> {
               : Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    CircleAvatar(
-                      radius: 50,
-                      backgroundImage: AssetImage('assets/default_profile.png'),
-                    ),
+                    // CircleAvatar(
+                    //   radius: 50,
+                    //   backgroundImage: AssetImage('assets/default_profile.png'),
+                    // ),
                     SizedBox(width: 16.0),
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,

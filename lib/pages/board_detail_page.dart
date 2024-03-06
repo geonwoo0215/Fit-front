@@ -3,6 +3,7 @@ import 'package:fit_fe/handler/token_refresh_handler.dart';
 import 'package:fit_fe/models/board_response.dart';
 import 'package:fit_fe/models/cloth_response.dart';
 import 'package:fit_fe/models/comment_response.dart';
+import 'package:fit_fe/pages/update_post_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
@@ -241,7 +242,9 @@ class _BoardDetailPageState extends State<BoardDetailPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
+        backgroundColor: Colors.white,
         title: Text('게시물 상세 정보'),
       ),
       body: SingleChildScrollView(
@@ -276,7 +279,15 @@ class _BoardDetailPageState extends State<BoardDetailPage> {
                                 children: <Widget>[
                                   ListTile(
                                     title: Text('수정'),
-                                    onTap: () {},
+                                    onTap: () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                UpdatePostPage(
+                                                    widget.board.id)),
+                                      );
+                                    },
                                   ),
                                   ListTile(
                                     title: Text(
@@ -313,6 +324,39 @@ class _BoardDetailPageState extends State<BoardDetailPage> {
             SizedBox(height: 16.0),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 34.0),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                // Align items to the start
+                children: [
+                  GestureDetector(
+                    onTap: () {
+                      showCommentsModal();
+                    },
+                    child: Row(
+                      children: [
+                        Icon(Icons.comment),
+                        SizedBox(width: 8.0),
+                      ],
+                    ),
+                  ),
+                  SizedBox(width: 16.0), // Add some space between the two icons
+                  GestureDetector(
+                    onTap: () {
+                      toggleLike();
+                    },
+                    child: Row(
+                      children: [
+                        Icon(isLiked ? Icons.favorite : Icons.favorite_border),
+                        SizedBox(width: 8.0),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            SizedBox(height: 8.0),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 34.0),
               child: Text(
                 widget.board.content,
                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18.0),
@@ -333,6 +377,15 @@ class _BoardDetailPageState extends State<BoardDetailPage> {
               padding: const EdgeInsets.symmetric(horizontal: 34.0),
               child: Text(
                 '도로 상태: ${widget.board.roadCondition}',
+                style: TextStyle(fontSize: 14.0),
+                textAlign: TextAlign.left,
+              ),
+            ),
+            SizedBox(height: 16.0),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 34.0),
+              child: Text(
+                '장소: ${widget.board.place}',
                 style: TextStyle(fontSize: 14.0),
                 textAlign: TextAlign.left,
               ),
@@ -362,29 +415,15 @@ class _BoardDetailPageState extends State<BoardDetailPage> {
             Padding(
               padding: const EdgeInsets.all(16.0),
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  ElevatedButton.icon(
-                    onPressed: () {
-                      showCommentsModal();
-                    },
-                    icon: Icon(Icons.comment),
-                    label: Text('댓글'),
-                  ),
-                  SizedBox(height: 8.0),
-                  ElevatedButton.icon(
-                    onPressed: () {
-                      toggleLike();
-                    },
-                    icon:
-                        Icon(isLiked ? Icons.favorite : Icons.favorite_border),
-                    label: Text('좋아요'),
-                  ),
-                  SizedBox(height: 8.0),
                   TextField(
+                    onTap: () {},
                     controller: commentController,
                     decoration: InputDecoration(
                       hintText: '댓글 작성...',
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(8.0),
+                      ),
                     ),
                   ),
                   SizedBox(height: 8.0),
