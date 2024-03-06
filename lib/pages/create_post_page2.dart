@@ -1,10 +1,11 @@
-import 'package:flutter/material.dart';
 import 'dart:io';
+
 import 'package:dio/dio.dart';
-import 'package:fit_fe/models/cloth_response.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:fit_fe/models/save_board_request.dart';
 import 'package:fit_fe/handler/token_refresh_handler.dart';
+import 'package:fit_fe/models/cloth_response.dart';
+import 'package:fit_fe/models/save_board_request.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class CreatePostStep2 extends StatefulWidget {
   final String imagePath;
@@ -16,7 +17,6 @@ class CreatePostStep2 extends StatefulWidget {
 }
 
 class _CreatePostStep2State extends State<CreatePostStep2> {
-  // Controllers for text fields
   TextEditingController photoContentController = TextEditingController();
   TextEditingController minTemperatureController = TextEditingController();
   TextEditingController maxTemperatureController = TextEditingController();
@@ -26,7 +26,7 @@ class _CreatePostStep2State extends State<CreatePostStep2> {
   final FlutterSecureStorage _secureStorage = FlutterSecureStorage();
 
   List<String> availableWeatherConditions = ['맑음', '비', '흐림', '눈'];
-  String selectedWeather = ''; // Track the selected weather condition
+  String selectedWeather = '';
 
   List<String> availableGroundConditions = ['평범한', '눈길', '미끄러운'];
   String selectedGroundCondition = '';
@@ -37,7 +37,6 @@ class _CreatePostStep2State extends State<CreatePostStep2> {
   List<String> availablePlace = ['결혼식', '외출', '스포츠', '페스티발', '파티'];
   String selectedPlace = '';
 
-  // Variables to store user input
   bool isPublic = true;
 
   bool isTopAppropriate = false;
@@ -103,8 +102,7 @@ class _CreatePostStep2State extends State<CreatePostStep2> {
                 child: TextField(
                   controller: photoContentController,
                   onChanged: (value) {
-                    setState(() {
-                    });
+                    setState(() {});
                   },
                   maxLines: null,
                   decoration: InputDecoration(
@@ -124,8 +122,7 @@ class _CreatePostStep2State extends State<CreatePostStep2> {
                     child: TextField(
                       controller: minTemperatureController,
                       onChanged: (value) {
-                        setState(() {
-                        });
+                        setState(() {});
                       },
                       keyboardType: TextInputType.number,
                       decoration: InputDecoration(
@@ -143,8 +140,7 @@ class _CreatePostStep2State extends State<CreatePostStep2> {
                     child: TextField(
                       controller: maxTemperatureController,
                       onChanged: (value) {
-                        setState(() {
-                        });
+                        setState(() {});
                       },
                       keyboardType: TextInputType.number,
                       decoration: InputDecoration(
@@ -172,7 +168,8 @@ class _CreatePostStep2State extends State<CreatePostStep2> {
                       Wrap(
                         alignment: WrapAlignment.start,
                         children: [
-                          for (String weatherCondition in availableWeatherConditions)
+                          for (String weatherCondition
+                              in availableWeatherConditions)
                             Padding(
                               padding: EdgeInsets.only(right: 10),
                               child: ElevatedButton(
@@ -180,10 +177,18 @@ class _CreatePostStep2State extends State<CreatePostStep2> {
                                   _selectWeatherOption(weatherCondition);
                                 },
                                 style: ElevatedButton.styleFrom(
-                                  backgroundColor: selectedWeather == weatherCondition ? Colors.black : Colors.white,
-                                  foregroundColor: selectedWeather == weatherCondition ? Colors.white : Colors.grey,
+                                  backgroundColor:
+                                      selectedWeather == weatherCondition
+                                          ? Colors.black
+                                          : Colors.white,
+                                  foregroundColor:
+                                      selectedWeather == weatherCondition
+                                          ? Colors.white
+                                          : Colors.grey,
                                   side: BorderSide(
-                                    color: selectedWeather == weatherCondition ? Colors.black : Colors.grey,
+                                    color: selectedWeather == weatherCondition
+                                        ? Colors.black
+                                        : Colors.grey,
                                   ),
                                 ),
                                 child: Text(weatherCondition),
@@ -208,7 +213,8 @@ class _CreatePostStep2State extends State<CreatePostStep2> {
                       Wrap(
                         alignment: WrapAlignment.start,
                         children: [
-                          for (String groundCondition in availableGroundConditions)
+                          for (String groundCondition
+                              in availableGroundConditions)
                             Padding(
                               padding: EdgeInsets.only(right: 10),
                               child: ElevatedButton(
@@ -216,10 +222,19 @@ class _CreatePostStep2State extends State<CreatePostStep2> {
                                   _selectGroundConditionOption(groundCondition);
                                 },
                                 style: ElevatedButton.styleFrom(
-                                  backgroundColor: selectedGroundCondition == groundCondition ? Colors.black : Colors.white,
-                                  foregroundColor: selectedGroundCondition == groundCondition ? Colors.white : Colors.grey,
+                                  backgroundColor:
+                                      selectedGroundCondition == groundCondition
+                                          ? Colors.black
+                                          : Colors.white,
+                                  foregroundColor:
+                                      selectedGroundCondition == groundCondition
+                                          ? Colors.white
+                                          : Colors.grey,
                                   side: BorderSide(
-                                    color: selectedGroundCondition == groundCondition ? Colors.black : Colors.grey,
+                                    color: selectedGroundCondition ==
+                                            groundCondition
+                                        ? Colors.black
+                                        : Colors.grey,
                                   ),
                                 ),
                                 child: Text(groundCondition),
@@ -252,10 +267,16 @@ class _CreatePostStep2State extends State<CreatePostStep2> {
                                   _selectPlaceOption(place);
                                 },
                                 style: ElevatedButton.styleFrom(
-                                  backgroundColor: selectedPlace == place ? Colors.black : Colors.white,
-                                  foregroundColor: selectedPlace == place ? Colors.white : Colors.grey,
+                                  backgroundColor: selectedPlace == place
+                                      ? Colors.black
+                                      : Colors.white,
+                                  foregroundColor: selectedPlace == place
+                                      ? Colors.white
+                                      : Colors.grey,
                                   side: BorderSide(
-                                    color: selectedPlace == place ? Colors.black : Colors.grey,
+                                    color: selectedPlace == place
+                                        ? Colors.black
+                                        : Colors.grey,
                                   ),
                                 ),
                                 child: Text(place),
@@ -268,7 +289,6 @@ class _CreatePostStep2State extends State<CreatePostStep2> {
                 ),
               ),
               SizedBox(height: 10),
-
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -284,22 +304,26 @@ class _CreatePostStep2State extends State<CreatePostStep2> {
                           foregroundColor: Colors.black,
                           side: BorderSide(color: Colors.black),
                         ),
-                        child: Text(selectedTop.isEmpty ? '상의 선택' : selectedTop, style: TextStyle(color: Colors.black)),
+                        child: Text(selectedTop.isEmpty ? '상의 선택' : selectedTop,
+                            style: TextStyle(color: Colors.black)),
                       ),
                       SizedBox(width: 10),
                       ElevatedButton(
                         onPressed: selectedTop.isEmpty
                             ? null
                             : () {
-                          setState(() {
-                            isTopAppropriate = !isTopAppropriate;
-                            clothAppropriates[selectedTopId] = isTopAppropriate;
-                          });
-                        },
+                                setState(() {
+                                  isTopAppropriate = !isTopAppropriate;
+                                  clothAppropriates[selectedTopId] =
+                                      isTopAppropriate;
+                                });
+                              },
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: isTopAppropriate ? Colors.green : Colors.red,
+                          backgroundColor:
+                              isTopAppropriate ? Colors.green : Colors.red,
                         ),
-                        child: Text(isTopAppropriate ? '적절' : '부적절', style: TextStyle(color: Colors.black)),
+                        child: Text(isTopAppropriate ? '적절' : '부적절',
+                            style: TextStyle(color: Colors.black)),
                       ),
                     ],
                   ),
@@ -321,22 +345,27 @@ class _CreatePostStep2State extends State<CreatePostStep2> {
                           foregroundColor: Colors.black,
                           side: BorderSide(color: Colors.black),
                         ),
-                        child: Text(selectedBottom.isEmpty ? '하의 선택' : selectedBottom, style: TextStyle(color: Colors.black)),
+                        child: Text(
+                            selectedBottom.isEmpty ? '하의 선택' : selectedBottom,
+                            style: TextStyle(color: Colors.black)),
                       ),
                       SizedBox(width: 10),
                       ElevatedButton(
                         onPressed: selectedBottom.isEmpty
                             ? null
                             : () {
-                          setState(() {
-                            isBottomAppropriate = !isBottomAppropriate;
-                            clothAppropriates[selectedBottomId] = isBottomAppropriate;
-                          });
-                        },
+                                setState(() {
+                                  isBottomAppropriate = !isBottomAppropriate;
+                                  clothAppropriates[selectedBottomId] =
+                                      isBottomAppropriate;
+                                });
+                              },
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: isBottomAppropriate ? Colors.green : Colors.red,
+                          backgroundColor:
+                              isBottomAppropriate ? Colors.green : Colors.red,
                         ),
-                        child: Text(isBottomAppropriate ? '적절' : '부적절', style: TextStyle(color: Colors.black)),
+                        child: Text(isBottomAppropriate ? '적절' : '부적절',
+                            style: TextStyle(color: Colors.black)),
                       ),
                     ],
                   ),
@@ -358,22 +387,27 @@ class _CreatePostStep2State extends State<CreatePostStep2> {
                           foregroundColor: Colors.black,
                           side: BorderSide(color: Colors.black),
                         ),
-                        child: Text(selectedShoes.isEmpty ? '신발 선택' : selectedShoes, style: TextStyle(color: Colors.black)),
+                        child: Text(
+                            selectedShoes.isEmpty ? '신발 선택' : selectedShoes,
+                            style: TextStyle(color: Colors.black)),
                       ),
                       SizedBox(width: 10),
                       ElevatedButton(
                         onPressed: selectedShoes.isEmpty
                             ? null
                             : () {
-                          setState(() {
-                            isShoesAppropriate = !isShoesAppropriate;
-                            clothAppropriates[selectedShoesId] = isShoesAppropriate;
-                          });
-                        },
+                                setState(() {
+                                  isShoesAppropriate = !isShoesAppropriate;
+                                  clothAppropriates[selectedShoesId] =
+                                      isShoesAppropriate;
+                                });
+                              },
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: isShoesAppropriate ? Colors.green : Colors.red,
+                          backgroundColor:
+                              isShoesAppropriate ? Colors.green : Colors.red,
                         ),
-                        child: Text(isShoesAppropriate ? '적절' : '부적절', style: TextStyle(color: Colors.black)),
+                        child: Text(isShoesAppropriate ? '적절' : '부적절',
+                            style: TextStyle(color: Colors.black)),
                       ),
                     ],
                   ),
@@ -399,18 +433,20 @@ class _CreatePostStep2State extends State<CreatePostStep2> {
       ),
     );
   }
+
   void _selectWeatherOption(String weatherCondition) {
     setState(() {
-      selectedWeather = selectedWeather == weatherCondition ? '' : weatherCondition;
+      selectedWeather =
+          selectedWeather == weatherCondition ? '' : weatherCondition;
     });
   }
 
   void _selectGroundConditionOption(String groundCondition) {
     setState(() {
-      selectedGroundCondition = selectedGroundCondition == groundCondition ? '' : groundCondition;
+      selectedGroundCondition =
+          selectedGroundCondition == groundCondition ? '' : groundCondition;
     });
   }
-
 
   void _selectPlaceOption(String place) {
     setState(() {
@@ -423,20 +459,23 @@ class _CreatePostStep2State extends State<CreatePostStep2> {
       String apiUrl = 'http://10.0.2.2:8080/file/multiparty-files';
 
       FormData formData = FormData.fromMap({
-        'multipartFiles': images.map((File file) =>
-            MultipartFile.fromFileSync(file.path, filename: file.path.split("/").last)).toList(),
+        'multipartFiles': images
+            .map((File file) => MultipartFile.fromFileSync(file.path,
+                filename: file.path.split("/").last))
+            .toList(),
       });
 
       String? jwtToken = await _secureStorage.read(key: 'jwt_token');
 
       Response response = await dio.post(
-          apiUrl,
-          data: formData,
-          options: Options(
+        apiUrl,
+        data: formData,
+        options: Options(
           headers: {
             'Authorization': 'Bearer $jwtToken',
           },
-        ),);
+        ),
+      );
 
       if (response.statusCode == 201) {
         List<String> uploadedUrls = List<String>.from(response.data['data']);
@@ -447,7 +486,7 @@ class _CreatePostStep2State extends State<CreatePostStep2> {
           open: isPublic,
           weather: selectedWeather,
           roadCondition: selectedGroundCondition,
-          place : selectedPlace,
+          place: selectedPlace,
           clothAppropriates: clothAppropriates,
           imageUrls: uploadedUrls,
         );
@@ -455,11 +494,10 @@ class _CreatePostStep2State extends State<CreatePostStep2> {
         await createBoard(boardRequest);
 
         print('Image uploaded successfully. URLs: $uploadedUrls');
-      }else if (response.statusCode == 401) {
+      } else if (response.statusCode == 401) {
         await TokenRefreshHandler.refreshAccessToken(context);
         await uploadImage(images);
       } else {
-        // Image upload failed
         print('Failed to upload image. Status code: ${response.statusCode}');
       }
     } catch (error) {
@@ -484,17 +522,14 @@ class _CreatePostStep2State extends State<CreatePostStep2> {
       );
 
       if (response.statusCode == 201) {
-        // 게시물 생성 성공
         print('게시물이 성공적으로 생성되었습니다.');
       } else {
-        // 게시물 생성 실패
         print('게시물 생성 실패. 상태 코드: ${response.statusCode}');
       }
     } catch (error) {
       print('게시물 생성 오류: $error');
     }
   }
-
 
   void _selectClothTypeOption(String clothType) async {
     String? jwtToken = await _secureStorage.read(key: 'jwt_token');
@@ -515,15 +550,14 @@ class _CreatePostStep2State extends State<CreatePostStep2> {
       print('Response Data: ${response.data}');
 
       if (response.statusCode == 200) {
-
         List<ClothResponse> clothList = (response.data['data'] as List)
             .map((item) => ClothResponse.fromJson(item))
             .toList();
 
-
         _showClothListDialog(clothList, clothType);
       } else {
-        print('Failed to fetch cloth list. Status code: ${response.statusCode}');
+        print(
+            'Failed to fetch cloth list. Status code: ${response.statusCode}');
       }
     } catch (error) {
       print('Failed to fetch cloth list: $error');
@@ -552,14 +586,14 @@ class _CreatePostStep2State extends State<CreatePostStep2> {
                       case '하의':
                         selectedBottom = cloth.information;
                         selectedBottomId = clothId.toString();
-                        clothAppropriates[selectedBottomId] = isBottomAppropriate;
+                        clothAppropriates[selectedBottomId] =
+                            isBottomAppropriate;
                         break;
                       case '신발':
                         selectedShoes = cloth.information;
                         selectedShoesId = clothId.toString();
                         clothAppropriates[selectedShoesId] = isShoesAppropriate;
                         break;
-
                     }
                   });
                   Navigator.of(context).pop();
@@ -580,4 +614,3 @@ class _CreatePostStep2State extends State<CreatePostStep2> {
     );
   }
 }
-

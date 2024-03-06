@@ -326,7 +326,6 @@ class _BoardDetailPageState extends State<BoardDetailPage> {
               padding: const EdgeInsets.symmetric(horizontal: 34.0),
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
-                // Align items to the start
                 children: [
                   GestureDetector(
                     onTap: () {
@@ -339,7 +338,7 @@ class _BoardDetailPageState extends State<BoardDetailPage> {
                       ],
                     ),
                   ),
-                  SizedBox(width: 16.0), // Add some space between the two icons
+                  SizedBox(width: 16.0),
                   GestureDetector(
                     onTap: () {
                       toggleLike();

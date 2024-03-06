@@ -68,15 +68,12 @@ class _BoardListPageState extends State<BoardPage> {
   }
 
   Future<void> _refreshBoardContents() async {
-    // Set loading to true to show the loading indicator during refresh
     setState(() {
       isLoading = true;
     });
 
-    // Fetch the board contents again
     await fetchBoardContents();
 
-    // Set loading to false after the fetch is complete
     setState(() {
       isLoading = false;
     });
