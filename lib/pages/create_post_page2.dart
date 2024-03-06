@@ -569,6 +569,8 @@ class _CreatePostStep2State extends State<CreatePostStep2> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
+          surfaceTintColor: Colors.white,
+          backgroundColor: Colors.white,
           title: Text('$clothType List'),
           content: Column(
             children: clothList.map((ClothResponse cloth) {
@@ -606,7 +608,12 @@ class _CreatePostStep2State extends State<CreatePostStep2> {
               onPressed: () {
                 Navigator.of(context).pop();
               },
-              child: Text('Close'),
+              child: Text(
+                'Close',
+                style: TextStyle(
+                  color: Colors.black,
+                ),
+              ),
             ),
           ],
         );
