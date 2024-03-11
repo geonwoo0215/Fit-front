@@ -1,7 +1,7 @@
-import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:fit_fe/handler/token_refresh_handler.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class AddClothPage extends StatefulWidget {
   @override
@@ -15,7 +15,25 @@ class _AddClothPageState extends State<AddClothPage> {
 
   List<String> clothTypes = ['상의', '하의', '악세사리', '신발'];
   List<String> clothSizes = ['S', 'M', 'L', 'XL'];
-  List<String> shoeSizes = ['220', '225', '230', '235', '240', '245', '250', '255','260','265','270','275','280','285','290','295','300'];
+  List<String> shoeSizes = [
+    '220',
+    '225',
+    '230',
+    '235',
+    '240',
+    '245',
+    '250',
+    '255',
+    '260',
+    '265',
+    '270',
+    '275',
+    '280',
+    '285',
+    '290',
+    '295',
+    '300'
+  ];
 
   String selectedType = '';
   String selectedSize = '';
@@ -30,7 +48,7 @@ class _AddClothPageState extends State<AddClothPage> {
 
   void _addCloth() async {
     final dio = Dio();
-    const String apiUrl = 'http://10.0.2.2:8080/cloths';
+    const String apiUrl = 'https://fitcorp.xyz/cloths';
 
     String clothTypeCode = clothTypeCodes[selectedType] ?? '';
 
@@ -54,8 +72,7 @@ class _AddClothPageState extends State<AddClothPage> {
       );
 
       if (response.statusCode == 201) {
-        Navigator.pop(
-            context, true);
+        Navigator.pop(context, true);
       } else if (response.statusCode == 401) {
         await TokenRefreshHandler.refreshAccessToken(context);
         _addCloth();

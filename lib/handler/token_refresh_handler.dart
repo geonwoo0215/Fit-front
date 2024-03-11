@@ -1,7 +1,8 @@
-import 'package:dio/dio.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:flutter/material.dart';
 import 'dart:io';
+
+import 'package:dio/dio.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class TokenRefreshHandler {
   static final Dio dio = Dio();
@@ -10,19 +11,19 @@ class TokenRefreshHandler {
     final _secureStorage = FlutterSecureStorage();
 
     String? refreshToken = await _secureStorage.read(key: 'refresh_token');
-    Cookie cookie  = Cookie.fromSetCookieValue(refreshToken!);
+    Cookie cookie = Cookie.fromSetCookieValue(refreshToken!);
     var value = cookie.value;
     print('refreshtoken = $value');
     try {
       final response = await dio.post(
-        'http://10.0.2.2:8080/members/tokens',
+        'https://fitcorp.xyz:8080/members/tokens',
         options: Options(
           headers: {
             HttpHeaders.cookieHeader: 'refreshToken=$value',
           },
           validateStatus: (status) {
-          return status == 401 || status == 201;
-        },
+            return status == 401 || status == 201;
+          },
         ),
       );
 

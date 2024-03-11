@@ -156,7 +156,7 @@ class _LoginPageState extends State<LoginPage> {
   void _login(String email, String password) async {
     try {
       Dio dio = Dio();
-      const String apiUrl = 'http://10.0.2.2:8080/login';
+      const String apiUrl = 'https://fitcorp.xyz/login';
 
       FormData formData = FormData.fromMap({
         'email': email,

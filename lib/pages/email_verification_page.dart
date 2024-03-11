@@ -1,7 +1,8 @@
 import 'dart:async';
-import 'package:flutter/material.dart';
+
 import 'package:dio/dio.dart';
 import 'package:fit_fe/pages/sign_up_page.dart';
+import 'package:flutter/material.dart';
 
 class EmailVerificationPage extends StatefulWidget {
   final String email;
@@ -53,7 +54,7 @@ class _EmailVerificationPageState extends State<EmailVerificationPage> {
   void checkCode() async {
     try {
       Response response = await dio.post(
-        'http://10.0.2.2:8080/members/email',
+        'https://fitcorp.xyz/members/email',
         data: {'email': widget.email, 'code': _verificationCodeController.text},
       );
 
@@ -104,7 +105,6 @@ class _EmailVerificationPageState extends State<EmailVerificationPage> {
               ),
             ),
             SizedBox(height: 16.0),
-
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 40.0),
               child: TextField(
@@ -127,12 +127,10 @@ class _EmailVerificationPageState extends State<EmailVerificationPage> {
                 ),
                 cursorColor: Colors.black,
                 keyboardType: TextInputType.number,
-                onChanged: (value) {
-                },
+                onChanged: (value) {},
               ),
             ),
             SizedBox(height: 16.0),
-
             _isTimerRunning
                 ? Text(
                     '남은 시간: ${(_timerSeconds ~/ 60).toString().padLeft(2, '0')}:${(_timerSeconds % 60).toString().padLeft(2, '0')}',
@@ -141,8 +139,7 @@ class _EmailVerificationPageState extends State<EmailVerificationPage> {
                 : Text('시간 초과'),
             SizedBox(height: 16.0),
             Container(
-              width: MediaQuery.of(context).size.width *
-                  0.8,
+              width: MediaQuery.of(context).size.width * 0.8,
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
               child: ElevatedButton(
                 onPressed: () {

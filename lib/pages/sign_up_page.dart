@@ -1,7 +1,8 @@
 import 'dart:convert';
-import 'package:flutter/material.dart';
+
 import 'package:dio/dio.dart';
 import 'package:fit_fe/pages/login_page.dart';
+import 'package:flutter/material.dart';
 
 class SignUpPage extends StatefulWidget {
   final String email;
@@ -140,7 +141,7 @@ class _SignUpPageState extends State<SignUpPage> {
       };
 
       Response response = await dio.post(
-        'http://10.0.2.2:8080/members',
+        'https://fitcorp.xyz/members',
         data: jsonEncode(signUpData),
         options: Options(
           headers: {'Content-Type': 'application/json'},

@@ -24,7 +24,7 @@ class _BoardListPageState extends State<BoardPage> {
 
   Future<void> fetchBoardContents() async {
     final dio = Dio();
-    const String apiUrl = 'http://10.0.2.2:8080/boards';
+    const String apiUrl = 'https://fitcorp.xyz/boards';
 
     String? jwtToken = await _secureStorage.read(key: 'jwt_token');
 

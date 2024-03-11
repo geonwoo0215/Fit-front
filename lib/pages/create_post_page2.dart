@@ -456,7 +456,7 @@ class _CreatePostStep2State extends State<CreatePostStep2> {
 
   Future<void> uploadImage(List<File> images) async {
     try {
-      String apiUrl = 'http://10.0.2.2:8080/file/multiparty-files';
+      String apiUrl = 'https://fitcorp.xyz/file/multiparty-files';
 
       FormData formData = FormData.fromMap({
         'multipartFiles': images
@@ -507,7 +507,7 @@ class _CreatePostStep2State extends State<CreatePostStep2> {
 
   Future<void> createBoard(SaveBoardRequest boardRequest) async {
     try {
-      String apiUrl = 'http://10.0.2.2:8080/boards';
+      String apiUrl = 'https://fitcorp.xyz/boards';
 
       String? jwtToken = await _secureStorage.read(key: 'jwt_token');
 
@@ -536,7 +536,7 @@ class _CreatePostStep2State extends State<CreatePostStep2> {
 
     try {
       final response = await dio.get(
-        'http://10.0.2.2:8080/cloths',
+        'https://fitcorp.xyz/cloths',
         queryParameters: {
           'type': _mapClothTypeToCode(clothType),
         },

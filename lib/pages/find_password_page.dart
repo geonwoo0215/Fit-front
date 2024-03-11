@@ -24,7 +24,7 @@ class _FindPasswordPageState extends State<FindPasswordPage> {
   Future<void> sendEmail() async {
     try {
       await dio.get(
-        'http://10.0.2.2:8080/members/email',
+        'https://fitcorp.xyz/members/email',
         queryParameters: {
           'email': _signupEmailController.text,
           'type': 'password'

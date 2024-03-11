@@ -1,10 +1,11 @@
 import 'package:dio/dio.dart';
+import 'package:fit_fe/handler/token_refresh_handler.dart';
 import 'package:fit_fe/models/board_response.dart';
 import 'package:fit_fe/models/page_response.dart';
 import 'package:fit_fe/pages/board_detail_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:fit_fe/handler/token_refresh_handler.dart';
+
 class SearchPage extends StatefulWidget {
   @override
   _SearchPageState createState() => _SearchPageState();
@@ -396,7 +397,7 @@ class _SearchPageState extends State<SearchPage> {
     String minTemperature = _minTemperatureController.text;
     String maxTemperature = _maxTemperatureController.text;
 
-    String apiUrl = 'http://10.0.2.2:8080/boards';
+    String apiUrl = 'https://fitcorp.xyz/boards';
 
     Dio dio = Dio();
     String? jwtToken = await _secureStorage.read(key: 'jwt_token');

@@ -26,7 +26,7 @@ class _RankPageState extends State<RankPage> {
 
   Future<void> fetchDailyRankContents() async {
     final dio = Dio();
-    const String dailyApiUrl = 'http://10.0.2.2:8080/boards/daily-ranking';
+    const String dailyApiUrl = 'https://fitcorp.xyz/boards/daily-ranking';
     String? jwtToken = await _secureStorage.read(key: 'jwt_token');
 
     try {
@@ -62,7 +62,7 @@ class _RankPageState extends State<RankPage> {
 
   Future<void> fetchWeeklyRankContents() async {
     final dio = Dio();
-    const String weeklyApiUrl = 'http://10.0.2.2:8080/boards/weekly-ranking';
+    const String weeklyApiUrl = 'https://fitcorp.xyz/boards/weekly-ranking';
     String? jwtToken = await _secureStorage.read(key: 'jwt_token');
 
     try {

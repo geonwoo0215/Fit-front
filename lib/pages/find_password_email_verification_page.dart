@@ -56,7 +56,7 @@ class _FindPasswordEmailVerificationPageState
   void checkCode() async {
     try {
       Response response = await dio.post(
-        'http://10.0.2.2:8080/members/email',
+        'https://fitcorp.xyz/members/email',
         data: {'email': widget.email, 'code': _verificationCodeController.text},
       );
 

@@ -329,7 +329,7 @@ class _UpdatePostPageState extends State<UpdatePostPage> {
 
   Future<void> updateBoard(UpdateBoardRequest boardRequest) async {
     try {
-      String apiUrl = 'http://10.0.2.2:8080/boards/${widget.id}';
+      String apiUrl = 'https://fitcorp.xyz/boards/${widget.id}';
 
       String? jwtToken = await _secureStorage.read(key: 'jwt_token');
 

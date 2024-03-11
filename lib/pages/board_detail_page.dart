@@ -39,7 +39,7 @@ class _BoardDetailPageState extends State<BoardDetailPage> {
     try {
       if (isLiked) {
         await dio.delete(
-          'http://10.0.2.2:8080/boards/${widget.board.id}/like',
+          'https://fitcorp.xyz/boards/${widget.board.id}/like',
           options: Options(
             headers: {
               'Content-Type': 'application/json',
@@ -49,7 +49,7 @@ class _BoardDetailPageState extends State<BoardDetailPage> {
         );
       } else {
         await dio.post(
-          'http://10.0.2.2:8080/boards/${widget.board.id}/like',
+          'https://fitcorp.xyz/boards/${widget.board.id}/like',
           options: Options(
             headers: {
               'Content-Type': 'application/json',
@@ -71,7 +71,7 @@ class _BoardDetailPageState extends State<BoardDetailPage> {
     String? jwtToken = await _secureStorage.read(key: 'jwt_token');
     try {
       Response response = await dio.get(
-        'http://10.0.2.2:8080/boards/${widget.board.id}/comments',
+        'https://fitcorp.xyz/boards/${widget.board.id}/comments',
         options: Options(
           headers: {
             'Content-Type': 'application/json',
@@ -109,7 +109,7 @@ class _BoardDetailPageState extends State<BoardDetailPage> {
     String? jwtToken = await _secureStorage.read(key: 'jwt_token');
     try {
       Response response = await dio.post(
-        'http://10.0.2.2:8080/boards/${widget.board.id}/comments',
+        'https://fitcorp.xyz/boards/${widget.board.id}/comments',
         options: Options(
           headers: {
             'Content-Type': 'application/json',
@@ -204,7 +204,7 @@ class _BoardDetailPageState extends State<BoardDetailPage> {
                   String? jwtToken =
                       await _secureStorage.read(key: 'jwt_token');
                   final response = await dio.delete(
-                    'http://10.0.2.2:8080/boards/${widget.board.id}',
+                    'https://fitcorp.xyz/boards/${widget.board.id}',
                     options: Options(
                       headers: {
                         'Content-Type': 'application/json',

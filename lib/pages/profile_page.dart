@@ -83,7 +83,7 @@ class _ProfilePageState extends State<ProfilePage> {
     try {
       String? jwtToken = await _secureStorage.read(key: 'jwt_token');
 
-      final response = await dio.post('http://10.0.2.2:8080/logout',
+      final response = await dio.post('https://fitcorp.xyz/logout',
           options: Options(
             headers: {
               'Authorization': 'Bearer $jwtToken',
@@ -113,7 +113,7 @@ class _ProfilePageState extends State<ProfilePage> {
 
     try {
       final response = await dio.get(
-        'http://10.0.2.2:8080/members/my-profile',
+        'https://fitcorp.xyz/members/my-profile',
         options: Options(
           headers: {
             'Authorization': 'Bearer $jwtToken',

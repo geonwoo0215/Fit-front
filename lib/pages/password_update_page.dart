@@ -120,7 +120,7 @@ class _PasswordUpdatePageState extends State<PasswordUpdatePage> {
       };
 
       Response response = await dio.patch(
-        'http://10.0.2.2:8080/members/password',
+        'https://fitcorp.xyz/password',
         data: jsonEncode(updateData),
         options: Options(
           headers: {'Content-Type': 'application/json'},
