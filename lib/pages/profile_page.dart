@@ -5,6 +5,7 @@ import 'package:fit_fe/models/member_response.dart';
 import 'package:fit_fe/models/page_response.dart';
 import 'package:fit_fe/pages/cloth_page.dart';
 import 'package:fit_fe/pages/my_board_page.dart';
+import 'package:fit_fe/pages/password_input_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
@@ -218,6 +219,20 @@ class _ProfilePageState extends State<ProfilePage> {
               foregroundColor: Colors.red,
             ),
             child: Text('로그아웃'),
+          ),
+          TextButton(
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => PasswordInputPage(),
+                ),
+              );
+            },
+            style: TextButton.styleFrom(
+              foregroundColor: Colors.red,
+            ),
+            child: Text('회원탈퇴'),
           ),
         ],
       ),
